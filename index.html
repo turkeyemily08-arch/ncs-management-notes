@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NCS·경영학 오답노트</title>
+<title>합격 부스터 — NCS·경영학</title>
 <style>
   :root{
-    --bg:#eef2fb; --bg2:#e6ebf7; --panel:#ffffff; --panel2:#f3f6fc; --line:#e2e8f3;
+    --bg:#eef2fb; --panel:#ffffff; --panel2:#f3f6fc; --line:#e2e8f3;
     --txt:#1f2733; --muted:#6b7689; --accent:#4f7cff; --accent2:#3a63e0;
     --good:#15a866; --good-bg:#e7f7ef; --bad:#e5484d; --bad-bg:#fdecec;
     --warn:#f59e0b; --star:#f5b301; --chip:#eef2fb;
@@ -17,41 +17,59 @@
     background:var(--bg);color:var(--txt);font-size:15px;line-height:1.55;
     background-image:radial-gradient(1200px 400px at 80% -100px,#dde7ff 0,transparent 60%)}
   header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:-.2px}
-  .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+    border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:-.3px}
+  header .sub{font-size:12px;color:var(--muted);font-weight:600;margin-left:-8px}
+  .tabs{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
   .tab{background:transparent;border:1px solid transparent;color:var(--muted);
-    padding:7px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700}
+    padding:7px 13px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700}
   .tab:hover{background:var(--chip)}
   .tab.active{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(79,124,255,.35)}
-  main{max-width:940px;margin:0 auto;padding:20px 22px 60px}
+  main{max-width:960px;margin:0 auto;padding:20px 22px 70px}
 
   /* HERO */
-  .hero{background:linear-gradient(135deg,#5b7cff,#7a5cff 55%,#9b6bff);border-radius:20px;
-    padding:22px 24px;color:#fff;box-shadow:0 10px 30px rgba(90,90,220,.28);margin-bottom:18px;
-    display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-  .hero .greet{font-size:20px;font-weight:800;margin:0 0 4px}
-  .hero .quote{font-size:13.5px;opacity:.92}
-  .hero .metrics{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
-  .metric{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:14px;
-    padding:10px 16px;text-align:center;min-width:84px;backdrop-filter:blur(4px)}
-  .metric b{display:block;font-size:24px;font-weight:800;line-height:1.1}
-  .metric span{font-size:11.5px;opacity:.9}
-  .ring{--p:0;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;
-    background:conic-gradient(#fff calc(var(--p)*1%),rgba(255,255,255,.25) 0);}
-  .ring i{width:48px;height:48px;border-radius:50%;background:#6a6bf0;display:grid;place-items:center;
-    font-weight:800;font-size:14px;font-style:normal}
+  .hero{background:linear-gradient(135deg,#5b7cff,#7a5cff 55%,#9b6bff);border-radius:22px;
+    padding:20px 24px;color:#fff;box-shadow:0 12px 34px rgba(90,90,220,.30);margin-bottom:16px;
+    display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .hero-left{flex:1;min-width:240px}
+  .hero .greet{font-size:19px;font-weight:800;margin:0 0 3px}
+  .hero .quote{font-size:13px;opacity:.92;margin:0 0 12px}
+  .lvbar{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:9px 13px}
+  .lvbar .lvtop{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-bottom:6px}
+  .lvbar .track{height:8px;background:rgba(255,255,255,.25);border-radius:6px;overflow:hidden}
+  .lvbar .track>i{display:block;height:100%;background:#ffe27a;border-radius:6px}
+  .hero-right{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .gauge{text-align:center}
+  .gauge .ring{--p:0;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;
+    background:conic-gradient(#ffe27a calc(var(--p)*1%),rgba(255,255,255,.22) 0);margin:0 auto}
+  .gauge .ring i{width:76px;height:76px;border-radius:50%;background:#6a5bdc;display:grid;place-items:center;
+    flex-direction:column;font-style:normal;text-align:center;line-height:1.1}
+  .gauge .ring b{font-size:22px;font-weight:800}
+  .gauge .glabel{font-size:12.5px;font-weight:700;margin-top:6px}
+  .gauge .gtier{font-size:11px;opacity:.9}
+  .minis{display:flex;flex-direction:column;gap:8px}
+  .mini{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:12px;
+    padding:7px 13px;min-width:128px}
+  .mini b{font-size:17px;font-weight:800} .mini span{font-size:11px;opacity:.9;display:block}
+  .mini .gtrack{height:6px;background:rgba(255,255,255,.25);border-radius:5px;margin-top:5px;overflow:hidden}
+  .mini .gtrack>i{display:block;height:100%;background:#9be8b8}
+  .goaledit{cursor:pointer}
 
-  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
   .badge{background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:6px 13px;
     font-size:12.5px;font-weight:700;color:var(--muted);box-shadow:var(--shadow);opacity:.5;filter:grayscale(.7)}
   .badge.on{opacity:1;filter:none;color:var(--txt)}
-  .badge.on .ic{filter:drop-shadow(0 1px 2px rgba(0,0,0,.12))}
 
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-  select,input[type=text]{background:var(--panel);border:1px solid var(--line);color:var(--txt);
-    border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;box-shadow:var(--shadow)}
-  .btn{background:var(--accent);border:none;color:#fff;padding:9px 16px;border-radius:10px;
+  .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .datebar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow)}
+  .dbtn{background:var(--chip);border:1px solid var(--line);color:var(--muted);padding:6px 12px;
+    border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
+  .dbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .datebar .lbl{font-size:12.5px;color:var(--muted);font-weight:600;margin-left:auto}
+  select,input[type=text],input[type=date]{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:8px 11px;font-size:14px;font-family:inherit;box-shadow:var(--shadow)}
+  .btn{background:var(--accent);border:none;color:#fff;padding:9px 15px;border-radius:10px;
     cursor:pointer;font-weight:700;font-size:14px;font-family:inherit;box-shadow:0 3px 10px rgba(79,124,255,.3)}
   .btn:hover{background:var(--accent2)}
   .btn.ghost{background:var(--panel);border:1px solid var(--line);color:var(--txt);box-shadow:var(--shadow)}
@@ -62,8 +80,9 @@
   .q.wrong{border-color:#f3c6c8} .q.correct{border-color:#bfe6d2}
   .q-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
   .q-no{background:var(--accent);color:#fff;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px;white-space:nowrap}
-  .q-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .q-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;align-items:center}
   .chip{background:var(--chip);color:#5566aa;font-size:11.5px;padding:3px 10px;border-radius:20px;font-weight:600}
+  .datestamp{font-size:11px;color:var(--muted)}
   .q-text{font-size:15.5px;font-weight:700;white-space:pre-wrap;margin-bottom:12px;line-height:1.5}
   .choices{display:flex;flex-direction:column;gap:8px}
   .choice{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);
@@ -71,58 +90,61 @@
   .choice:hover{border-color:#b9c6ee;background:#eef3ff}
   .choice .num{font-weight:800;color:#8a93a8;min-width:18px}
   .choice.picked{border-color:var(--accent);background:#e9f0ff}
-  .choice.ans{border-color:var(--good);background:var(--good-bg)}
-  .choice.ans .num{color:var(--good)}
-  .choice.miss{border-color:var(--bad);background:var(--bad-bg)}
-  .choice.miss .num{color:var(--bad)}
+  .choice.ans{border-color:var(--good);background:var(--good-bg)} .choice.ans .num{color:var(--good)}
+  .choice.miss{border-color:var(--bad);background:var(--bad-bg)} .choice.miss .num{color:var(--bad)}
   .choice.locked{cursor:default}
   .reveal{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line);display:none}
   .reveal.show{display:block}
   .verdict{font-weight:800;font-size:15px;margin-bottom:8px}
   .verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
-  .expl{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
-    color:#384152;font-size:14px;white-space:pre-wrap}
+  .expl{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:#384152;font-size:14px;white-space:pre-wrap}
   .expl b{color:var(--accent2)}
-  .tipbox{margin-top:10px;background:linear-gradient(135deg,#fff7e0,#fff1cc);border:1px solid #f3dd9a;
-    border-radius:12px;padding:12px 14px}
+  .tipbox{margin-top:10px;background:linear-gradient(135deg,#fff7e0,#fff1cc);border:1px solid #f3dd9a;border-radius:12px;padding:12px 14px}
   .tipbox .th{font-weight:800;color:#b8860b;font-size:13.5px;margin-bottom:6px}
   .tipbox .tt{font-size:14px;color:#5a4a17;white-space:pre-wrap;margin-bottom:8px}
-  .tipbox textarea{width:100%;border:1px solid #ecd58a;border-radius:9px;padding:8px 10px;font-size:13.5px;
-    font-family:inherit;background:rgba(255,255,255,.7);resize:vertical}
-  .tipbox .save{margin-top:6px}
+  .tipbox textarea{width:100%;border:1px solid #ecd58a;border-radius:9px;padding:8px 10px;font-size:13.5px;font-family:inherit;background:rgba(255,255,255,.7);resize:vertical}
   .q-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
-  .pillbtn{background:var(--panel);border:1px solid var(--line);color:var(--muted);
-    padding:5px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+  .pillbtn{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:5px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
   .pillbtn:hover{background:var(--chip)}
   .pillbtn.star{color:var(--star);border-color:#f3d27a}
   .pillbtn.star.on{background:#fff6da;border-color:var(--star)}
 
-  .hint{color:#4a5568;font-size:13.5px;background:var(--panel);border:1px solid var(--line);
-    border-radius:12px;padding:13px 15px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .hint{color:#4a5568;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:14px;box-shadow:var(--shadow)}
   .hint code{background:#eaf0ff;padding:1px 6px;border-radius:5px;color:#3a63e0;font-weight:600}
   .empty{text-align:center;color:var(--muted);padding:48px 0}
   .row{display:flex;gap:10px;flex-wrap:wrap}
-  textarea.io{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--txt);
-    border-radius:12px;padding:12px;font-size:14px;line-height:1.5;resize:vertical;font-family:inherit;box-shadow:var(--shadow)}
-  pre.io{background:#f7f9ff;border:1px solid var(--line);border-radius:9px;padding:11px;
-    font-size:12.5px;max-height:240px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#3b4252}
+  textarea.io{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:12px;font-size:14px;line-height:1.5;resize:vertical;font-family:inherit;box-shadow:var(--shadow)}
+  pre.io{background:#f7f9ff;border:1px solid var(--line);border-radius:9px;padding:11px;font-size:12.5px;max-height:240px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#3b4252}
   .pill{font-size:12.5px;color:var(--muted)}
-  .progress{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden;flex:1;min-width:160px;border:1px solid var(--line)}
+  .progress{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden;flex:1;min-width:140px;border:1px solid var(--line)}
   .progress>i{display:block;height:100%;background:linear-gradient(90deg,#5b7cff,#7a5cff)}
   .stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 18px;min-width:108px;box-shadow:var(--shadow)}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 18px;min-width:104px;box-shadow:var(--shadow)}
   .stat b{display:block;font-size:23px;font-weight:800}
   .stat span{color:var(--muted);font-size:12px}
   h3{margin:22px 0 10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+
+  /* 학습 잔디 */
+  .cal{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,15px);grid-auto-columns:15px;gap:4px;overflow-x:auto;padding:4px 0}
+  .cell{width:15px;height:15px;border-radius:4px;background:#e6ebf5;cursor:default;border:1px solid rgba(0,0,0,.03)}
+  .cell.l1{background:#bcd2ff} .cell.l2{background:#7fa8ff} .cell.l3{background:#5b7cff} .cell.l4{background:#3a63e0}
+  .cell.has{cursor:pointer}
+  .cell.has:hover{outline:2px solid #7a5cff}
+  .callegend{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:8px}
+  .callegend .cell{width:12px;height:12px}
+  .weakitem{display:flex;align-items:center;gap:12px;margin:9px 0}
+  .weakitem .nm{min-width:120px;font-weight:700}
 </style>
 </head>
 <body>
 <header>
-  <h1>📒 NCS·경영학 오답노트</h1>
+  <h1>🚀 합격 부스터</h1><span class="sub">NCS·경영학 데일리 트레이너</span>
   <div class="tabs">
-    <button class="tab active" data-tab="solve">문제풀이</button>
+    <button class="tab active" data-tab="solve">학습하기</button>
+    <button class="tab" data-tab="cal">학습기록</button>
     <button class="tab" data-tab="wrong">오답노트</button>
-    <button class="tab" data-tab="stats">통계</button>
+    <button class="tab" data-tab="stats">통계·약점</button>
     <button class="tab" data-tab="add">문항추가</button>
     <button class="tab" data-tab="data">데이터</button>
   </div>
@@ -131,8 +153,15 @@
   <div class="hero" id="hero"></div>
   <div class="badges" id="badges"></div>
 
-  <!-- 문제풀이 -->
+  <!-- 학습하기 -->
   <section id="solve">
+    <div class="datebar" id="datebar">
+      <button class="dbtn on" data-d="">전체 기간</button>
+      <button class="dbtn" data-d="today">오늘</button>
+      <button class="dbtn" data-d="yday">어제</button>
+      <input type="date" id="datePick">
+      <span class="lbl" id="dateLabel"></span>
+    </div>
     <div class="toolbar">
       <select id="fSubject"><option value="">전체 과목</option></select>
       <select id="fArea"><option value="">전체 영역</option></select>
@@ -143,20 +172,23 @@
         <option value="correct">맞은 것</option>
         <option value="flag">⭐ 별표</option>
       </select>
-      <input type="text" id="fSearch" placeholder="검색어…" style="flex:1;min-width:150px">
+      <input type="text" id="fSearch" placeholder="검색어…" style="flex:1;min-width:140px">
       <button class="btn ghost sm" id="todayReview">🎲 오늘의 복습</button>
       <button class="btn ghost sm" id="resetAns">기록 초기화</button>
     </div>
     <div id="solveList"></div>
   </section>
 
+  <!-- 학습기록 (캘린더) -->
+  <section id="cal" hidden></section>
+
   <!-- 오답노트 -->
   <section id="wrong" hidden>
-    <div class="hint">틀린 문항과 ⭐ 별표한 문항만 모았습니다. ⭐ 별표를 누르면 <b>암기 꿀팁</b>이 나타나요. 복습 후 보기를 다시 눌러보세요.</div>
+    <div class="hint">틀린 문항과 ⭐ 별표한 문항만 모았습니다. ⭐ 별표를 누르면 <b>암기 꿀팁</b>이 나타나요.</div>
     <div id="wrongList"></div>
   </section>
 
-  <!-- 통계 -->
+  <!-- 통계·약점 -->
   <section id="stats" hidden></section>
 
   <!-- 문항추가 -->
@@ -196,209 +228,209 @@
 </main>
 
 <script>
-const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1";
-let QUESTIONS=[], STATE={}, META={streak:0,best:0,lastDate:"",daily:{date:"",count:0}};
+const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1", LS_LOG="ohap_log_v1";
+let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10};
+let dateFilter=""; // "" | "YYYY-MM-DD"
 
-/* ---------- 기본 25문항 (경영학 9급) + 암기 꿀팁(tip) ---------- */
+/* ===== 기본 25문항 + 꿀팁 ===== */
 const SEED=[
  {s:"경영학",a:"생산/재고",q:"경제적 주문량(EOQ) 모형의 활용을 위한 기본 가정으로 가장 적절하지 않은 것은?",
   c:["단위당 재고유지비용과 1회당 재고주문비용은 주문량과 관계 없이 일정함.","단위기간 중 수요량은 가변적이며 일정 및 연간 수요량 역시 미확정적임.","재고조달기간(리드타임)은 일정함.","구입단가는 주문량과 관계 없이 일정함.(수량할인 없음)"],
-  ans:2,e:"EOQ는 수요가 일정하고 확정적이라고 가정한다. ②는 수요가 가변·미확정이라 했으므로 가정에 어긋난다.",
-  t:"EOQ 대전제 = 수요가 '일정·확정'. 보기에 '가변·미확정·불규칙'이 보이면 그게 함정(오답)!"},
+  ans:2,e:"EOQ는 수요가 일정하고 확정적이라고 가정한다. ②는 수요가 가변·미확정이라 했으므로 가정에 어긋난다.",t:"EOQ 대전제 = 수요가 '일정·확정'. 보기에 '가변·미확정·불규칙'이 보이면 그게 함정(오답)!"},
  {s:"경영학",a:"회계",q:"회계등식 또는 재무상태표 등식으로 적절한 것은?",
   c:["자산 = 부채 + 자본","자산 + 비용 = 부채 + 자본 + 수익","자산 = 자본 - 부채","자본 = 자산 + 부채"],
-  ans:1,e:"재무상태표 등식: 자산 = 부채 + 자본. (②는 거래를 반영한 확장식이지만 기본 재무상태표 등식은 ①)",
-  t:"'자산 = 부채 + 자본' 딱 하나만 기억. 자본 = 자산 − 부채(내 몫)로도 변형해 외우기."},
+  ans:1,e:"재무상태표 등식: 자산 = 부채 + 자본. (②는 거래를 반영한 확장식이지만 기본 재무상태표 등식은 ①)",t:"'자산 = 부채 + 자본' 딱 하나만 기억. 자본 = 자산 − 부채(내 몫)로도 변형해 외우기."},
  {s:"경영학",a:"경영사",q:"테일러(Taylor)의 과학적 경영관리법의 네 가지 원칙으로 적절하지 않은 것은?",
   c:["절차의 표준화","과학적 선발 및 훈련","효율적 과업수행","창의력 향상을 위한 전문화"],
-  ans:4,e:"테일러 4원칙: 작업의 과학화(표준화), 과학적 선발·훈련, 협동(성과급), 관리자–작업자 분업. '창의력 향상을 위한 전문화'는 포함되지 않는다.",
-  t:"테일러=효율·표준화의 사람. '창의력'이라는 단어가 보이면 테일러와 안 어울린다 → 함정."},
+  ans:4,e:"테일러 4원칙: 작업의 과학화(표준화), 과학적 선발·훈련, 협동(성과급), 관리자–작업자 분업. '창의력 향상을 위한 전문화'는 포함되지 않는다.",t:"테일러=효율·표준화의 사람. '창의력'이라는 단어가 보이면 테일러와 안 어울린다 → 함정."},
  {s:"경영학",a:"재무",q:"투자에서 얻어지는 가치의 순증가분을 의미하는 개념으로 적절한 것은?",
   c:["수익성지수","순현재가치","내부수익률","한계수익률"],
-  ans:2,e:"순현재가치(NPV)는 투자로 얻는 현금흐름의 현재가치에서 투자액을 뺀 '순증가분'을 의미한다.",
-  t:"'순(純)증가분' = '순(純)현재가치(NPV)'. 글자 '순'이 힌트!"},
+  ans:2,e:"순현재가치(NPV)는 투자로 얻는 현금흐름의 현재가치에서 투자액을 뺀 '순증가분'을 의미한다.",t:"'순(純)증가분' = '순(純)현재가치(NPV)'. 글자 '순'이 힌트!"},
  {s:"경영학",a:"마케팅",q:"마케팅 조사자료의 측정을 위한 4대 척도(Scale)의 종류로 가장 적절한 것은?",
   c:["명목척도, 서열척도, 등간척도, 비율척도","명목척도, 정량척도, 등간척도, 서열척도","명목척도, 정량척도, 정성척도, 서열척도","명목척도, 서열척도, 정성척도, 비율척도"],
-  ans:1,e:"측정의 4대 척도: 명목(Nominal)·서열(Ordinal)·등간(Interval)·비율(Ratio).",
-  t:"'명·서·등·비' 순서로 정보량이 커짐. (이름→순서→간격→절대0) → 「명세서 등비」로 암기. '정량/정성'은 가짜."},
+  ans:1,e:"측정의 4대 척도: 명목(Nominal)·서열(Ordinal)·등간(Interval)·비율(Ratio).",t:"'명·서·등·비' 순서로 정보량이 커짐. (이름→순서→간격→절대0) → 「명세서 등비」로 암기. '정량/정성'은 가짜."},
  {s:"경영학",a:"조직",q:"소집단 네트워크와 효과성 기준을 연결한 것으로 가장 적절한 것은? (㉮~㉱)",
   c:["㉮ 체인형 / 속도 보통·정확성 높음·리더등장 보통·만족 보통","㉯ 체인형 / 속도 빠름·정확성 높음·리더등장 보통·만족 높음","㉰ 수레바퀴형 / 속도 빠름·정확성 높음·리더등장 보통·만족 낮음","㉱ 완전연결형 / 속도 빠름·정확성 보통·리더등장 높음·만족 높음"],
-  ans:1,e:"체인형은 속도 보통, 정확성 높음, 리더등장 보통이라 ㉮가 가장 부합. 수레바퀴형은 리더등장 '높음', 완전연결형은 리더등장 '낮음/없음'이라 ㉰·㉱는 틀림.",
-  t:"리더등장으로 구분: 수레바퀴형=리더 '높음', 완전연결형=리더 '없음/낮음'·만족 '높음'. 이 두 개만 잡으면 소거됨."},
+  ans:1,e:"체인형은 속도 보통, 정확성 높음, 리더등장 보통이라 ㉮가 가장 부합. 수레바퀴형은 리더등장 '높음', 완전연결형은 리더등장 '낮음/없음'이라 ㉰·㉱는 틀림.",t:"리더등장으로 구분: 수레바퀴형=리더 '높음', 완전연결형=리더 '없음/낮음'·만족 '높음'. 이 두 개만 잡으면 소거됨."},
  {s:"경영학",a:"인사/조직",q:"목표관리기법(MBO) 프로그램의 공통된 네 가지 요소로 적절하지 않은 것은?",
   c:["목표 특수성","의사결정 참가","명확한 기간","분배적 정의"],
-  ans:4,e:"MBO 4요소: 목표 특수성, 참여적 의사결정, 명확한 기간(시한), 성과 피드백. '분배적 정의'는 해당하지 않는다.",
-  t:"MBO 4요소 = 목표·참여·기간·피드백. '분배적 정의'(공정성 이론 용어)가 보이면 함정."},
+  ans:4,e:"MBO 4요소: 목표 특수성, 참여적 의사결정, 명확한 기간(시한), 성과 피드백. '분배적 정의'는 해당하지 않는다.",t:"MBO 4요소 = 목표·참여·기간·피드백. '분배적 정의'(공정성 이론 용어)가 보이면 함정."},
  {s:"경영학",a:"재무",q:"기업의 소유주(주주·채권자)와 대리인(경영자) 관계에서 발생하는 대리인 비용(Agency Cost)으로 가장 적절한 것은?",
   c:["관리비용, 투자손실, 계약비용","감시비용, 잔여손실, 확증비용","감시비용, 잔여손실, 계약비용","관리비용, 투자손실, 확증비용"],
-  ans:2,e:"대리인비용 = 감시비용(Monitoring) + 확증비용(Bonding) + 잔여손실(Residual Loss).",
-  t:"'감·확·잔'으로 암기 — 감시비용·확증비용·잔여손실. '계약비용/관리비용/투자손실'은 가짜."},
+  ans:2,e:"대리인비용 = 감시비용(Monitoring) + 확증비용(Bonding) + 잔여손실(Residual Loss).",t:"'감·확·잔'으로 암기 — 감시비용·확증비용·잔여손실. '계약비용/관리비용/투자손실'은 가짜."},
  {s:"경영학",a:"마케팅",q:"소비자들의 구매의사결정 과정으로 가장 적절한 것은?",
   c:["문제인식→대안평가→정보탐색→구매결정→구매 후 행동","정보탐색→문제인식→대안평가→구매결정→구매 후 행동","정보탐색→대안평가→문제인식→구매결정→구매 후 행동","문제인식→정보탐색→대안평가→구매결정→구매 후 행동"],
-  ans:4,e:"구매의사결정 5단계: 문제인식→정보탐색→대안평가→구매결정→구매 후 행동.",
-  t:"'문·정·대·구·후' — 문제 생기면 → 정보 찾고 → 대안 비교 → 구매 → 후기. 항상 '문제인식'으로 시작!"},
+  ans:4,e:"구매의사결정 5단계: 문제인식→정보탐색→대안평가→구매결정→구매 후 행동.",t:"'문·정·대·구·후' — 문제 생기면 → 정보 찾고 → 대안 비교 → 구매 → 후기. 항상 '문제인식'으로 시작!"},
  {s:"경영학",a:"전략",q:"기업이 복수의 사업 활동을 할 때 각각을 독립 운영할 때보다 경제적인 사업운영이 가능해지는 효과를 의미하는 용어는?",
   c:["범위의 경제성","규모의 경제성","경험 효과","제품 포트폴리오 관리(PPM)"],
-  ans:1,e:"여러 사업을 함께 운영할 때 비용이 절감되는 효과는 범위의 경제성(Economies of Scope). 규모의 경제는 한 제품의 생산량 증가에 따른 단가 하락.",
-  t:"여러 '범위(사업)'를 함께 = 범위의 경제. 한 제품 '규모(양)' 늘리기 = 규모의 경제. 키워드로 구분!"},
+  ans:1,e:"여러 사업을 함께 운영할 때 비용이 절감되는 효과는 범위의 경제성(Economies of Scope). 규모의 경제는 한 제품의 생산량 증가에 따른 단가 하락.",t:"여러 '범위(사업)'를 함께 = 범위의 경제. 한 제품 '규모(양)' 늘리기 = 규모의 경제. 키워드로 구분!"},
  {s:"경영학",a:"조직",q:"조직에서 집단 간 갈등을 유발하는 원인으로 가장 적절하지 않은 것은?",
   c:["보상구조","상위목표","지각의 차이","업무의 상호의존성"],
-  ans:2,e:"상위목표(Superordinate goal)는 집단 간 갈등을 '해소'하는 통합 요인이다. 나머지는 갈등 유발 요인.",
-  t:"함정! '상위목표'는 갈등을 푸는 약. 함께 협력할 큰 목표가 생기면 싸움이 줄어든다 → 유발 원인 아님."},
+  ans:2,e:"상위목표(Superordinate goal)는 집단 간 갈등을 '해소'하는 통합 요인이다. 나머지는 갈등 유발 요인.",t:"함정! '상위목표'는 갈등을 푸는 약. 함께 협력할 큰 목표가 생기면 싸움이 줄어든다 → 유발 원인 아님."},
  {s:"경영학",a:"마케팅",q:"마케팅조사가 필요한 이유로 가장 적절한 것은?",
   c:["소비자를 이해하려고","정부방침을 알려고","재고관리를 하려고","경쟁관리를 하려고"],
-  ans:1,e:"마케팅조사의 근본 목적은 소비자(시장)를 이해하여 의사결정에 활용하는 것.",
-  t:"마케팅의 출발점은 언제나 '소비자'. 헷갈리면 가장 고객 지향적인 보기를 고르기."},
+  ans:1,e:"마케팅조사의 근본 목적은 소비자(시장)를 이해하여 의사결정에 활용하는 것.",t:"마케팅의 출발점은 언제나 '소비자'. 헷갈리면 가장 고객 지향적인 보기를 고르기."},
  {s:"경영학",a:"조직",q:"집단 발전 단계 모델의 순서로 가장 적절한 것은?",
   c:["형성-규범-혼란-해체-실행","혼란-형성-규범-실행-해체","형성-혼란-규범-실행-해체","형성-실행-혼란-규범-해체"],
-  ans:3,e:"터크만(Tuckman) 모델: 형성(Forming)-혼란(Storming)-규범(Norming)-실행(Performing)-해체(Adjourning).",
-  t:"'형·혼·규·실·해' — 형성→혼란 겪고→규범 세워→실행하다→해체. 항상 '형성'으로 시작, '해체'로 끝!"},
+  ans:3,e:"터크만(Tuckman) 모델: 형성(Forming)-혼란(Storming)-규범(Norming)-실행(Performing)-해체(Adjourning).",t:"'형·혼·규·실·해' — 형성→혼란 겪고→규범 세워→실행하다→해체. 항상 '형성'으로 시작, '해체'로 끝!"},
  {s:"경영학",a:"회계",q:"회계처리 시 차변(Debit)과 대변(Credit)에 기재하는 내용으로 가장 적절한 것은?",
   c:["차변 자산의 증가 / 대변 자산의 감소","차변 부채의 증가 / 대변 부채의 감소","차변 자본의 증가 / 대변 자본의 감소","차변 수익의 발생 / 대변 비용의 발생"],
-  ans:1,e:"차변=자산↑·부채↓·자본↓·비용 발생, 대변=자산↓·부채↑·자본↑·수익 발생. 따라서 ①만 옳다.",
-  t:"차변엔 '자산·비용'이 늘어난다(자산은 왼쪽 친구). 자산 증가는 차변, 자산 감소는 대변 → ①만 맞음."},
+  ans:1,e:"차변=자산↑·부채↓·자본↓·비용 발생, 대변=자산↓·부채↑·자본↑·수익 발생. 따라서 ①만 옳다.",t:"차변엔 '자산·비용'이 늘어난다(자산은 왼쪽 친구). 자산 증가는 차변, 자산 감소는 대변 → ①만 맞음."},
  {s:"경영학",a:"생산/재고",q:"자재소요계획(MRP)의 3대 구성요소로 적절하지 않은 것은?",
   c:["주생산계획(MPS)","자재명세서(BOM)","재고기록(IR)","부품주문계획(POP)"],
-  ans:4,e:"MRP의 3대 입력요소: MPS, BOM, 재고기록(IR). 부품주문계획(POP)은 입력이 아니다.",
-  t:"MRP 입력 3종 = MPS·BOM·IR(재고기록). 'POP(부품주문계획)'은 결과지 입력이 아니다 → 함정."},
+  ans:4,e:"MRP의 3대 입력요소: MPS, BOM, 재고기록(IR). 부품주문계획(POP)은 입력이 아니다.",t:"MRP 입력 3종 = MPS·BOM·IR(재고기록). 'POP(부품주문계획)'은 결과지 입력이 아니다 → 함정."},
  {s:"경영학",a:"인사",q:"직원의 선발방법 기준 중 신뢰성에 대한 설명으로 가장 적절하지 않은 것은?",
   c:["신뢰성은 성과측정이 확률적 오차로부터 자유로운 정도를 의미한다.","신뢰성 평가에서 상관계수를 계산하며, 이는 두 변수 사이 상관관계의 정도를 나타낸다.","신뢰성 평가 시 측정의 신뢰도 평가와 신뢰성의 기준이 중요하다.","신뢰성은 선발도구로부터의 성과가 직무로부터 성과를 반영하는 정도를 나타낸다."],
-  ans:4,e:"④는 '타당성(Validity)'의 정의다. 신뢰성은 측정의 일관성(반복 시 같은 결과)을 의미한다.",
-  t:"신뢰성=일관성(재면 또 같은 값), 타당성=직무성과를 잘 '반영'하는가. '반영'이란 말이 나오면 타당성 → 함정!"},
+  ans:4,e:"④는 '타당성(Validity)'의 정의다. 신뢰성은 측정의 일관성(반복 시 같은 결과)을 의미한다.",t:"신뢰성=일관성(재면 또 같은 값), 타당성=직무성과를 잘 '반영'하는가. '반영'이란 말이 나오면 타당성 → 함정!"},
  {s:"경영학",a:"전략",q:"기업이 다른 기업에게 보상을 받고 자사의 사업 시스템을 이용하게 하는 관계로 가장 적절한 것은?",
   c:["라이선싱(Licensing)","프랜차이징(Franchising)","조인트 벤처(Joint Venture)","팩토링(Factoring)"],
-  ans:2,e:"사업 시스템(브랜드·운영 노하우 전체)을 보상받고 이용하게 하는 것은 프랜차이징. 라이선싱은 특정 권리(상표·기술)만 허용.",
-  t:"'사업 시스템 전체'=프랜차이징(편의점 떠올리기). '특정 권리만'=라이선싱. 팩토링은 매출채권 매각이라 무관."},
+  ans:2,e:"사업 시스템(브랜드·운영 노하우 전체)을 보상받고 이용하게 하는 것은 프랜차이징. 라이선싱은 특정 권리(상표·기술)만 허용.",t:"'사업 시스템 전체'=프랜차이징(편의점 떠올리기). '특정 권리만'=라이선싱. 팩토링은 매출채권 매각이라 무관."},
  {s:"경영학",a:"재무",q:"재무관리의 목표로 가장 적절하지 않은 것은?",
   c:["기업가치의 극대화","매출의 극대화","주주 부의 극대화","주가의 극대화"],
-  ans:2,e:"재무관리 목표는 기업가치·주주 부·주가의 극대화. 매출 극대화는 재무관리의 목표가 아니다.",
-  t:"재무목표=가치·주주부·주가('가치' 계열). '매출/이익 극대화'는 재무관리 목표 아님 → 함정."},
+  ans:2,e:"재무관리 목표는 기업가치·주주 부·주가의 극대화. 매출 극대화는 재무관리의 목표가 아니다.",t:"재무목표=가치·주주부·주가('가치' 계열). '매출/이익 극대화'는 재무관리 목표 아님 → 함정."},
  {s:"경영학",a:"생산/예측",q:"시계열분석 모델의 시계열 데이터 구성요소에 대한 설명으로 가장 적절하지 않은 것은?",
   c:["추세변동 - 장기간에 걸친 변동의 전반적 방향성","계절변동 - 1년을 주기로 동일 계절·시기에 따라 반복되는 변동","순환변동 - 일정한 주기에 걸쳐 단기간에 균일하게 발생하는 변동","불규칙변동 - 예상할 수 없는 돌발적·불분명한 원인으로 일어나는 변동"],
-  ans:3,e:"순환변동(Cyclical)은 1년 이상의 장기적이고 '불규칙한' 주기로 발생한다. '일정 주기·단기간·균일'은 틀린 설명.",
-  t:"순환변동은 '1년 이상·불규칙' 주기(경기순환 떠올리기). '단기·균일·일정 주기'면 오답이다."},
+  ans:3,e:"순환변동(Cyclical)은 1년 이상의 장기적이고 '불규칙한' 주기로 발생한다. '일정 주기·단기간·균일'은 틀린 설명.",t:"순환변동은 '1년 이상·불규칙' 주기(경기순환 떠올리기). '단기·균일·일정 주기'면 오답이다."},
  {s:"경영학",a:"인사",q:"인사관리와 관련된 내용으로 가장 적절하지 않은 것은?",
   c:["능력은 어떤 사람이 현재 지니고 있는 소질의 수준에 대한 평가이다.","경영자는 능력 차이보다 그 능력을 활용해 직무를 잘 수행해낼 수 있는가에 더 관심을 둔다.","조직 구성원의 성과는 능력에 맞는 직무에 배치되었을 때 높아진다.","능력이 직무 요구수준보다 낮으면 문제가 되지만 높을 경우에는 문제가 되지 않는다."],
-  ans:4,e:"능력이 직무 요구보다 지나치게 높아도 '과잉자격(over-qualification)'으로 불만·이직 등 문제가 된다. 따라서 ④는 부적절.",
-  t:"능력은 낮아도, '너무 높아도'(과잉자격) 문제. '높으면 괜찮다'는 보기는 함정."},
+  ans:4,e:"능력이 직무 요구보다 지나치게 높아도 '과잉자격(over-qualification)'으로 불만·이직 등 문제가 된다. 따라서 ④는 부적절.",t:"능력은 낮아도, '너무 높아도'(과잉자격) 문제. '높으면 괜찮다'는 보기는 함정."},
  {s:"경영학",a:"재무",q:"자본자산가격결정모형(CAPM)의 기본 가정으로 가장 적절하지 않은 것은?",
   c:["모든 투자자는 자산의 미래수익률 분포에 대해 동질적으로 기대한다.","모든 투자자는 평균-분산 기준에 따라 투자한다.","모든 투자자는 위험선호형이며 기대효용이 극대화되도록 투자한다.","무위험자산이 존재하며 모든 투자자는 무위험이자율로 차입·대출할 수 있다."],
-  ans:3,e:"CAPM은 모든 투자자가 '위험회피형(risk-averse)'이라고 가정한다. '위험선호형'은 틀림.",
-  t:"CAPM 투자자는 '위험회피형'. '위험선호형'으로 바꿔 놓는 게 단골 함정!"},
+  ans:3,e:"CAPM은 모든 투자자가 '위험회피형(risk-averse)'이라고 가정한다. '위험선호형'은 틀림.",t:"CAPM 투자자는 '위험회피형'. '위험선호형'으로 바꿔 놓는 게 단골 함정!"},
  {s:"경영학",a:"지식경영",q:"노나카(Nonaka)의 SECI 모형(지식변환과정)에 대한 설명으로 가장 적절한 것은?",
   c:["외재화는 형식지가 다른 사람의 암묵지로 전이되는 과정이다.","사회화는 특정 사람의 암묵지가 다른 사람의 암묵지로 전이되는 과정이다.","종합화는 특정 사람의 암묵지가 형식지로 전이되는 과정이다.","내재화는 형식지가 다른 사람의 형식지로 전이되는 과정이다."],
-  ans:2,e:"사회화(Socialization)=암묵지→암묵지. (외재화=암묵지→형식지, 종합화=형식지→형식지, 내재화=형식지→암묵지)",
-  t:"표로 외우기 — 사회화:암→암, 외재화:암→형, 종합화:형→형, 내재화:형→암. (앞이 출발, 뒤가 도착)"},
+  ans:2,e:"사회화(Socialization)=암묵지→암묵지. (외재화=암묵지→형식지, 종합화=형식지→형식지, 내재화=형식지→암묵지)",t:"표로 외우기 — 사회화:암→암, 외재화:암→형, 종합화:형→형, 내재화:형→암. (앞이 출발, 뒤가 도착)"},
  {s:"경영학",a:"인사",q:"인적자원 모집의 방법에서 외부모집에 대한 설명으로 가장 적절한 것은?",
   c:["직무기술서 제공으로 기업이 잘 파악하고 있는 지원자를 모집할 수 있다.","지원자가 많을수록 비용·속도에서 효율성이 높다.","새로운 아이디어·방식의 업무 진행에 효과가 있고, 회사를 강화하고 경쟁자를 약화시키는 데 좋다.","지원자가 일자리에 대한 지식을 갖고 있어 과장된 기대를 최소화할 수 있다."],
-  ans:3,e:"외부모집의 장점은 새로운 아이디어·관점 유입과 조직 활성화. ①·②·④는 내부모집의 특징이다.",
-  t:"외부모집=새 피·새 아이디어 수혈. '잘 아는 지원자/현실적 기대/빠르고 싼'은 전부 내부모집 특징."},
+  ans:3,e:"외부모집의 장점은 새로운 아이디어·관점 유입과 조직 활성화. ①·②·④는 내부모집의 특징이다.",t:"외부모집=새 피·새 아이디어 수혈. '잘 아는 지원자/현실적 기대/빠르고 싼'은 전부 내부모집 특징."},
  {s:"경영학",a:"전략",q:"포터(Porter)가 제시한 본원적 경쟁전략(Generic Strategy)의 유형으로 가장 적절하지 않은 것은?",
   c:["원가우위전략(Cost Leadership)","차별화전략(Differentiation)","방어형전략(Defender)","집중화전략(Focused)"],
-  ans:3,e:"포터의 본원적 전략은 원가우위·차별화·집중화 3가지. 방어형(Defender)은 마일즈&스노우(Miles & Snow)의 전략 유형이다.",
-  t:"포터 본원적 = '원·차·집' 3개. '방어형(Defender)·공격형(Prospector)'이 보이면 마일즈&스노우 → 함정!"},
+  ans:3,e:"포터의 본원적 전략은 원가우위·차별화·집중화 3가지. 방어형(Defender)은 마일즈&스노우(Miles & Snow)의 전략 유형이다.",t:"포터 본원적 = '원·차·집' 3개. '방어형(Defender)·공격형(Prospector)'이 보이면 마일즈&스노우 → 함정!"},
  {s:"경영학",a:"인사/조직",q:"직무설계의 동기부여적 접근법에 대한 설명으로 적절하지 않은 것은?",
   c:["직무특성이 심리적 의미와 잠재적 동기에 영향을 준다는 데 초점을 둔다.","조직심리학에 기반을 두고 있다.","전통적인 산업공학에 근간을 두며 직무 구조화의 효율성 극대화에 초점을 둔다.","직무만족·직무관여·참여와 성과 등 태도변수를 중요한 결과로 본다."],
-  ans:3,e:"③은 '기계적(산업공학적) 접근'의 설명이다. 동기부여적 접근은 직무특성과 심리적 의미에 초점을 둔다.",
-  t:"동기부여적=심리·직무특성. '산업공학·효율 극대화'는 기계적 접근이라 반대편 → 함정."}
+  ans:3,e:"③은 '기계적(산업공학적) 접근'의 설명이다. 동기부여적 접근은 직무특성과 심리적 의미에 초점을 둔다.",t:"동기부여적=심리·직무특성. '산업공학·효율 극대화'는 기계적 접근이라 반대편 → 함정."}
 ];
-
-/* ---------- 응원 메시지 ---------- */
 const QUOTES=[
- "합격은 매일의 한 문제가 쌓여 만들어집니다 💪",
- "틀린 문제 하나가 곧 점수 하나입니다. 오답이 곧 자산!",
- "오늘도 접속한 당신, 이미 절반은 합격입니다 🌟",
- "어제의 나보다 한 문제 더. 그게 전부예요.",
- "꾸준함이 재능을 이깁니다. 지금처럼만 🔥",
- "별표 친 문항만 다시 봐도 시험장에서 웃습니다 😊",
- "포기하지 않는 한 실패는 없습니다. 가즈아!",
- "공기업 합격, 생각보다 가까이 있어요. 한 걸음 더."
+ "합격은 매일의 한 문제가 쌓여 만들어집니다 💪","틀린 문제 하나가 곧 점수 하나입니다. 오답이 곧 자산!",
+ "오늘도 접속한 당신, 이미 절반은 합격입니다 🌟","어제의 나보다 한 문제 더. 그게 전부예요.",
+ "꾸준함이 재능을 이깁니다. 지금처럼만 🔥","별표 친 문항만 다시 봐도 시험장에서 웃습니다 😊",
+ "포기하지 않는 한 실패는 없습니다. 가즈아!","공기업 합격, 생각보다 가까이 있어요. 한 걸음 더."
 ];
 
-/* ---------- 저장/로드 ---------- */
+/* ===== 날짜 유틸 ===== */
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function today(){return iso(new Date())}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return iso(d)}
+function fmtK(s){if(!s)return"";const[y,m,d]=s.split("-");return `${m}월 ${parseInt(d)}일`}
+
+/* ===== 저장/로드 ===== */
 function load(){
   try{QUESTIONS=JSON.parse(localStorage.getItem(LS_DATA))||[]}catch(e){QUESTIONS=[]}
   if(!QUESTIONS.length)seed();
   try{STATE=JSON.parse(localStorage.getItem(LS_ANS))||{}}catch(e){STATE={}}
+  try{LOG=JSON.parse(localStorage.getItem(LS_LOG))||{}}catch(e){LOG={}}
   try{Object.assign(META,JSON.parse(localStorage.getItem(LS_META))||{})}catch(e){}
   updateStreak();
 }
 function saveQ(){localStorage.setItem(LS_DATA,JSON.stringify(QUESTIONS))}
 function saveS(){localStorage.setItem(LS_ANS,JSON.stringify(STATE))}
+function saveL(){localStorage.setItem(LS_LOG,JSON.stringify(LOG))}
 function saveM(){localStorage.setItem(LS_META,JSON.stringify(META))}
 function seed(){QUESTIONS=SEED.map((x,i)=>mk("seed"+(i+1),x));saveQ()}
 function mk(id,x){return{id,subject:x.s,area:x.a,q:x.q,choices:x.c,answer:x.ans,expl:x.e,tip:x.t||""}}
 function uid(){return"q"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function today(){const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
-function ymd(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
 
 function updateStreak(){
   const t=today();
-  if(META.lastDate===t)return; // 오늘 이미 방문
-  const y=new Date();y.setDate(y.getDate()-1);
-  if(META.lastDate===ymd(y))META.streak=(META.streak||0)+1; // 어제 방문 → 연속
-  else META.streak=1; // 끊김 또는 첫 방문
-  META.best=Math.max(META.best||0,META.streak);
-  META.lastDate=t;
-  if(!META.daily||META.daily.date!==t)META.daily={date:t,count:0};
-  saveM();
+  if(META.lastDate===t)return;
+  if(META.lastDate===yesterday())META.streak=(META.streak||0)+1; else META.streak=1;
+  META.best=Math.max(META.best||0,META.streak);META.lastDate=t;saveM();
 }
-function bumpToday(){
-  const t=today();
-  if(!META.daily||META.daily.date!==t)META.daily={date:t,count:0};
-  META.daily.count++;saveM();
+function logAnswer(qid,correct){
+  const t=today();LOG[t]=LOG[t]||{ids:[],correct:0};
+  if(!LOG[t].ids.includes(qid)){LOG[t].ids.push(qid);if(correct)LOG[t].correct++}
+  saveL();
 }
 
-/* ---------- HERO / BADGES ---------- */
+/* ===== 지표 계산 ===== */
+function metrics(){
+  let solved=0,correct=0,flag=0;
+  QUESTIONS.forEach(q=>{const s=STATE[q.id]||{};if(s.flag)flag++;if(s.pick>0){solved++;if(s.pick===q.answer)correct++}});
+  const total=QUESTIONS.length,acc=solved?Math.round(correct/solved*100):0;
+  const xp=correct*10+solved*3;
+  const level=Math.floor(xp/100)+1, into=xp%100;
+  const coverage=total?solved/total*100:0;
+  const streak=META.streak||1;
+  let conf=Math.round(acc*0.6+coverage*0.25+Math.min(streak,15)/15*100*0.15);
+  if(solved<5)conf=Math.min(conf,35);
+  conf=Math.max(0,Math.min(100,conf));
+  return{solved,correct,flag,total,acc,xp,level,into,coverage,conf};
+}
+function confTier(c){
+  if(c>=85)return["합격 유력! 🏆","#ffe27a"];
+  if(c>=70)return["합격권 진입 🔥","#9be8b8"];
+  if(c>=45)return["상승세 📈","#bcd2ff"];
+  return["준비 단계 🌱","#e6ebf5"];
+}
+
+/* ===== HERO ===== */
 function renderHero(){
   const h=new Date().getHours();
   const greet=h<6?"늦은 밤까지 고생 많아요 🌙":h<12?"좋은 아침이에요 ☀️":h<18?"오늘도 화이팅이에요 ✨":"저녁에도 한 문제 더 🌆";
-  let solved=0,correct=0;
-  QUESTIONS.forEach(q=>{const s=STATE[q.id]||{};if(s.pick>0){solved++;if(s.pick===q.answer)correct++}});
-  const acc=solved?Math.round(correct/solved*100):0;
-  const dailyN=(META.daily&&META.daily.date===today())?META.daily.count:0;
+  const m=metrics();
+  const dailyN=(LOG[today()]||{ids:[]}).ids.length;
+  const goalPct=Math.min(100,Math.round(dailyN/(META.goal||10)*100));
+  const tier=confTier(m.conf);
   const quote=QUOTES[(new Date().getDate())%QUOTES.length];
   document.getElementById("hero").innerHTML=`
-    <div>
+    <div class="hero-left">
       <p class="greet">${greet}</p>
       <p class="quote">${quote}</p>
+      <div class="lvbar">
+        <div class="lvtop"><span>⚡ Lv.${m.level}</span><span>XP ${m.into}/100</span></div>
+        <div class="track"><i style="width:${m.into}%"></i></div>
+      </div>
     </div>
-    <div class="metrics">
-      <div class="metric"><b>🔥 ${META.streak||1}</b><span>연속 학습일</span></div>
-      <div class="metric"><b>${dailyN}</b><span>오늘 푼 문제</span></div>
-      <div class="metric"><div class="ring" style="--p:${acc}"><i>${acc}%</i></div><span style="display:block;margin-top:4px">정답률</span></div>
+    <div class="hero-right">
+      <div class="gauge">
+        <div class="ring" style="--p:${m.conf}"><i><b>${m.conf}</b><span style="font-size:10px">/100</span></i></div>
+        <div class="glabel">합격 자신감 지수</div>
+        <div class="gtier">${tier[0]}</div>
+      </div>
+      <div class="minis">
+        <div class="mini"><b>🔥 ${m.streak ?? 1}일</b><span>연속 학습</span></div>
+        <div class="mini goaledit" id="goalMini" title="클릭해서 목표 변경">
+          <b>${dailyN} / ${META.goal||10}</b><span>오늘 목표</span>
+          <div class="gtrack"><i style="width:${goalPct}%"></i></div>
+        </div>
+        <div class="mini"><b>${m.acc}%</b><span>전체 정답률</span></div>
+      </div>
     </div>`;
+  const gm=document.getElementById("goalMini");
+  if(gm)gm.onclick=()=>{const n=prompt("하루 목표 문제 수를 정하세요",META.goal||10);if(n){META.goal=Math.max(1,parseInt(n)||10);saveM();renderAll()}};
 }
 function renderBadges(){
-  let solved=0,correct=0,flag=0;
-  QUESTIONS.forEach(q=>{const s=STATE[q.id]||{};if(s.flag)flag++;if(s.pick>0){solved++;if(s.pick===q.answer)correct++}});
-  const acc=solved?correct/solved*100:0;
+  const m=metrics();
   const defs=[
-    {ic:"🌱",name:"첫걸음",on:solved>=1},
-    {ic:"📚",name:"10문제",on:solved>=10},
-    {ic:"🔥",name:"3일 연속",on:(META.best||META.streak||0)>=3},
-    {ic:"🎯",name:"정확왕 80%",on:solved>=10&&acc>=80},
-    {ic:"⭐",name:"꿀팁 수집가",on:flag>=5},
-    {ic:"🏆",name:"전체 완주",on:QUESTIONS.length>0&&solved>=QUESTIONS.length},
+    {ic:"🌱",name:"첫걸음",on:m.solved>=1},{ic:"📚",name:"10문제",on:m.solved>=10},
+    {ic:"🔥",name:"3일 연속",on:(META.best||META.streak||0)>=3},{ic:"🎯",name:"정확왕 80%",on:m.solved>=10&&m.acc>=80},
+    {ic:"⭐",name:"꿀팁 수집가",on:m.flag>=5},{ic:"⚡",name:"Lv.3 도달",on:m.level>=3},
+    {ic:"🏆",name:"전체 완주",on:m.total>0&&m.solved>=m.total},
   ];
-  document.getElementById("badges").innerHTML=defs.map(b=>
-    `<div class="badge ${b.on?"on":""}" title="${b.on?"달성!":"잠김"}"><span class="ic">${b.ic}</span> ${b.name}</div>`).join("");
+  document.getElementById("badges").innerHTML=defs.map(b=>`<div class="badge ${b.on?"on":""}">${b.ic} ${b.name}</div>`).join("");
 }
 
-/* ---------- 문항 카드 ---------- */
+/* ===== 문항 카드 ===== */
 function qCard(q,idx){
-  const st=STATE[q.id]||{}; const pick=st.pick||0; const answered=pick>0;
-  const correct=answered&&pick===q.answer;
+  const st=STATE[q.id]||{};const pick=st.pick||0;const answered=pick>0;const correct=answered&&pick===q.answer;
   const card=document.createElement("div");
   card.className="q "+(answered?(correct?"correct":"wrong"):"");
   card.innerHTML=`
-    <div class="q-top">
-      <span class="q-no">${idx}</span>
+    <div class="q-top"><span class="q-no">${idx}</span>
       <div class="q-meta">
-        <span class="chip">${esc(q.subject||"")}</span>
-        ${q.area?`<span class="chip">${esc(q.area)}</span>`:""}
-      </div>
-    </div>
+        ${st.date?`<span class="datestamp">🗓 ${fmtK(st.date)} 학습</span>`:""}
+        <span class="chip">${esc(q.subject||"")}</span>${q.area?`<span class="chip">${esc(q.area)}</span>`:""}
+      </div></div>
     <div class="q-text">${esc(q.q)}</div>
     <div class="choices"></div>
     <div class="reveal ${answered?"show":""}">
@@ -409,29 +441,24 @@ function qCard(q,idx){
     <div class="q-actions">
       <button class="pillbtn star ${st.flag?"on":""}">${st.flag?"⭐ 별표됨 (꿀팁 ON)":"☆ 별표 + 꿀팁"}</button>
       ${answered?`<button class="pillbtn redo">🔁 다시 풀기</button>`:""}
-      <button class="pillbtn edit">✏️ 수정</button>
-      <button class="pillbtn del">🗑️ 삭제</button>
+      <button class="pillbtn edit">✏️ 수정</button><button class="pillbtn del">🗑️ 삭제</button>
     </div>`;
   const wrap=card.querySelector(".choices");
   q.choices.forEach((c,i)=>{
-    const n=i+1; const el=document.createElement("div");
-    el.className="choice"+(answered?" locked":"");
-    if(answered){if(n===q.answer)el.className+=" ans";if(n===pick&&!correct)el.className+=" miss";if(n===pick)el.className+=" picked";}
+    const n=i+1;const el=document.createElement("div");el.className="choice"+(answered?" locked":"");
+    if(answered){if(n===q.answer)el.className+=" ans";if(n===pick&&!correct)el.className+=" miss";if(n===pick)el.className+=" picked"}
     el.innerHTML=`<span class="num">${n}</span><span>${esc(c)}</span>`;
-    if(!answered)el.onclick=()=>{STATE[q.id]={...st,pick:n};saveS();bumpToday();renderAll()};
+    if(!answered)el.onclick=()=>{const ok=n===q.answer;STATE[q.id]={...st,pick:n,date:today()};saveS();logAnswer(q.id,ok);renderAll()};
     wrap.appendChild(el);
   });
-  // 꿀팁(별표 시 표시)
   if(st.flag){
     const ta=card.querySelector(".tiparea");
-    ta.innerHTML=`<div class="tipbox">
-      <div class="th">💡 암기 꿀팁</div>
+    ta.innerHTML=`<div class="tipbox"><div class="th">💡 암기 꿀팁</div>
       ${q.tip?`<div class="tt">${esc(q.tip)}</div>`:`<div class="tt" style="opacity:.7">기본 꿀팁이 없어요. 아래에 나만의 암기법을 적어보세요 ✍️</div>`}
-      <textarea rows="2" placeholder="나만의 암기법 메모… (자동 저장)">${esc(st.note||"")}</textarea>
-      <button class="btn sm save">메모 저장</button>
-    </div>`;
+      <textarea rows="2" placeholder="나만의 암기법 메모…">${esc(st.note||"")}</textarea>
+      <button class="btn sm save">메모 저장</button></div>`;
     const tx=ta.querySelector("textarea");
-    ta.querySelector(".save").onclick=()=>{const s=STATE[q.id]||{};s.note=tx.value;STATE[q.id]=s;saveS();ta.querySelector(".save").textContent="저장됨 ✓";setTimeout(()=>ta.querySelector(".save").textContent="메모 저장",1200)};
+    ta.querySelector(".save").onclick=()=>{const s=STATE[q.id]||{};s.note=tx.value;STATE[q.id]=s;saveS();const b=ta.querySelector(".save");b.textContent="저장됨 ✓";setTimeout(()=>b.textContent="메모 저장",1200)};
   }
   card.querySelector(".star").onclick=()=>{const s=STATE[q.id]||{};s.flag=!s.flag;STATE[q.id]=s;saveS();renderAll()};
   const redo=card.querySelector(".redo");if(redo)redo.onclick=()=>{const s=STATE[q.id]||{};s.pick=0;STATE[q.id]=s;saveS();renderAll()};
@@ -441,11 +468,12 @@ function qCard(q,idx){
 }
 function esc(s){return(s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}
 
-/* ---------- 필터/렌더 ---------- */
+/* ===== 필터/렌더 ===== */
 function v(id){return document.getElementById(id).value}
 function filtered(){
   const sub=v("fSubject"),ar=v("fArea"),stt=v("fState"),kw=(v("fSearch")||"").trim().toLowerCase();
   return QUESTIONS.filter(q=>{
+    if(dateFilter){const lg=LOG[dateFilter];if(!lg||!lg.ids.includes(q.id))return false}
     if(sub&&q.subject!==sub)return false;
     if(ar&&q.area!==ar)return false;
     if(kw&&!((q.q+q.choices.join(" ")+(q.expl||"")).toLowerCase().includes(kw)))return false;
@@ -457,16 +485,18 @@ function filtered(){
     return true;
   });
 }
-function solveRank(q){const s=STATE[q.id]||{};if(!s.pick)return 0;return s.pick===q.answer?2:1} // 0:안푼 1:틀림 2:맞음
+function solveRank(q){const s=STATE[q.id]||{};if(!s.pick)return 0;return s.pick===q.answer?2:1}
 function renderSolve(){
   const box=document.getElementById("solveList");box.innerHTML="";
   let list=filtered();
-  // 상태 필터를 안 걸었을 땐 '안 푼 것 → 틀린 것 → 맞은 것' 순으로 자동 정렬(맞은 건 아래로 밀림)
-  if(!v("fState")){list=[...list].sort((a,b)=>solveRank(a)-solveRank(b))}
-  if(!list.length){box.innerHTML='<div class="empty">조건에 맞는 문항이 없습니다.</div>';return}
-  const todo=list.filter(q=>!solveRank(q)).length;
-  if(!v("fState")&&!v("fSearch")&&!v("fSubject")&&!v("fArea")){
-    box.innerHTML=`<div class="hint">📌 안 푼 문제 <b>${todo}개</b>를 위로 모았어요. 푼 문제는 아래로 내려갑니다. 이어서 풀어보세요!</div>`;
+  if(!v("fState")&&!dateFilter)list=[...list].sort((a,b)=>solveRank(a)-solveRank(b));
+  if(!list.length){box.innerHTML='<div class="empty">'+(dateFilter?fmtK(dateFilter)+"에 푼 문제가 없어요.":"조건에 맞는 문항이 없습니다.")+'</div>';return}
+  if(!dateFilter&&!v("fState")&&!v("fSearch")&&!v("fSubject")&&!v("fArea")){
+    const todo=list.filter(q=>!solveRank(q)).length;
+    box.innerHTML=`<div class="hint">📌 안 푼 문제 <b>${todo}개</b>를 위로 모았어요. 푼 문제는 아래로 내려갑니다!</div>`;
+  } else if(dateFilter){
+    const lg=LOG[dateFilter]||{ids:[],correct:0};
+    box.innerHTML=`<div class="hint">🗓 <b>${fmtK(dateFilter)}</b>에 푼 문제 ${lg.ids.length}개 · 정답 ${lg.correct}개</div>`;
   }
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
@@ -476,55 +506,104 @@ function renderWrong(){
   if(!list.length){box.innerHTML='<div class="empty">아직 오답이 없습니다. 문제를 풀어보세요! 👍</div>';return}
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
+
+/* ===== 학습기록 (캘린더) ===== */
+function renderCal(){
+  const sec=document.getElementById("cal");
+  const end=new Date();const start=new Date();start.setDate(end.getDate()-7*12);start.setDate(start.getDate()-start.getDay());
+  let cells="";const days=Math.round((end-start)/86400000)+1;
+  let studyDays=0,weekCount=0;const weekAgo=new Date();weekAgo.setDate(end.getDate()-6);
+  for(let i=0;i<days;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);const k=iso(d);
+    const lg=LOG[k];const c=lg?lg.ids.length:0;
+    if(c>0)studyDays++;
+    if(c>0&&d>=new Date(iso(weekAgo)))weekCount+=c;
+    let lv="";if(c>=10)lv="l4";else if(c>=6)lv="l3";else if(c>=3)lv="l2";else if(c>=1)lv="l1";
+    cells+=`<div class="cell ${lv} ${c?"has":""}" data-k="${k}" title="${fmtK(k)} · ${c}문제"></div>`;
+  }
+  const m=metrics();
+  sec.innerHTML=`
+    <div class="card">
+      <div class="stat-row">
+        <div class="stat"><b>${studyDays}</b><span>학습한 날</span></div>
+        <div class="stat" style="color:#7a5cff"><b>🔥 ${META.streak||1}</b><span>연속 학습일</span></div>
+        <div class="stat"><b>${META.best||0}</b><span>최고 연속</span></div>
+        <div class="stat"><b>${weekCount}</b><span>최근 7일 푼 문제</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">🌱 학습 잔디 (최근 12주)</h3>
+      <div class="cal">${cells}</div>
+      <div class="callegend">적음 <span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span> 많음
+        &nbsp;·&nbsp; 칸을 클릭하면 그날 푼 문제를 볼 수 있어요.</div>
+    </div>`;
+  sec.querySelectorAll(".cell.has").forEach(el=>el.onclick=()=>{setDateFilter(el.dataset.k);switchTab("solve")});
+}
+
+/* ===== 통계·약점 ===== */
 function renderStats(){
-  const sec=document.getElementById("stats");
-  const total=QUESTIONS.length;let solved=0,correct=0,flag=0;const bySub={};
-  QUESTIONS.forEach(q=>{const s=STATE[q.id]||{};if(s.flag)flag++;
-    const k=q.subject||"기타";bySub[k]=bySub[k]||{t:0,s:0,c:0};bySub[k].t++;
-    if(s.pick>0){solved++;bySub[k].s++;if(s.pick===q.answer){correct++;bySub[k].c++}}});
-  const wrong=solved-correct;const acc=solved?Math.round(correct/solved*100):0;
+  const sec=document.getElementById("stats");const m=metrics();const bySub={},byArea={};
+  QUESTIONS.forEach(q=>{const s=STATE[q.id]||{};
+    const ks=q.subject||"기타";bySub[ks]=bySub[ks]||{t:0,s:0,c:0};bySub[ks].t++;
+    const ka=q.area||"기타";byArea[ka]=byArea[ka]||{t:0,s:0,c:0};byArea[ka].t++;
+    if(s.pick>0){bySub[ks].s++;byArea[ka].s++;if(s.pick===q.answer){bySub[ks].c++;byArea[ka].c++}}});
+  // 약점: 푼 게 2개 이상인 영역 중 정답률 낮은 순
+  const weak=Object.keys(byArea).map(k=>({k,...byArea[k],acc:byArea[k].s?byArea[k].c/byArea[k].s*100:101}))
+    .filter(x=>x.s>=2).sort((a,b)=>a.acc-b.acc).slice(0,3);
   let html=`<div class="stat-row">
-    <div class="stat"><b>${total}</b><span>전체 문항</span></div>
-    <div class="stat"><b>${solved}</b><span>푼 문항</span></div>
-    <div class="stat" style="color:var(--good)"><b>${correct}</b><span>정답</span></div>
-    <div class="stat" style="color:var(--bad)"><b>${wrong}</b><span>오답</span></div>
-    <div class="stat"><b>${acc}%</b><span>정답률</span></div>
-    <div class="stat" style="color:var(--star)"><b>${flag}</b><span>⭐ 별표</span></div>
-    <div class="stat" style="color:#7a5cff"><b>🔥 ${META.best||META.streak||0}</b><span>최고 연속일</span></div>
-  </div><h3>과목·영역별 정답률</h3>`;
+    <div class="stat"><b>${m.total}</b><span>전체 문항</span></div>
+    <div class="stat"><b>${m.solved}</b><span>푼 문항</span></div>
+    <div class="stat" style="color:var(--good)"><b>${m.correct}</b><span>정답</span></div>
+    <div class="stat" style="color:var(--bad)"><b>${m.solved-m.correct}</b><span>오답</span></div>
+    <div class="stat"><b>${m.acc}%</b><span>정답률</span></div>
+    <div class="stat" style="color:#7a5cff"><b>⚡ Lv.${m.level}</b><span>XP ${m.xp}</span></div>
+  </div>`;
+  if(weak.length){
+    html+=`<h3>🩹 약점 영역 TOP ${weak.length} — 여기부터 복습!</h3>`;
+    weak.forEach(w=>{const a=Math.round(w.acc);
+      html+=`<div class="weakitem"><span class="nm">${esc(w.k)}</span>
+        <div class="progress"><i style="width:${a}%;background:${a<50?'linear-gradient(90deg,#e5484d,#f59e0b)':'linear-gradient(90deg,#5b7cff,#7a5cff)'}"></i></div>
+        <span class="pill">${w.c}/${w.s} (${a}%)</span>
+        <button class="btn sm" onclick="goArea('${esc(w.k)}')">복습</button></div>`;});
+  }
+  html+=`<h3>과목별 정답률</h3>`;
   Object.keys(bySub).sort().forEach(k=>{const d=bySub[k];const a=d.s?Math.round(d.c/d.s*100):0;
-    html+=`<div style="display:flex;align-items:center;gap:12px;margin:8px 0">
-      <span style="min-width:120px;font-weight:700">${esc(k)}</span>
-      <div class="progress"><i style="width:${a}%"></i></div>
-      <span class="pill">${d.c}/${d.s} 정답 · 전체 ${d.t}</span></div>`;});
+    html+=`<div class="weakitem"><span class="nm">${esc(k)}</span><div class="progress"><i style="width:${a}%"></i></div><span class="pill">${d.c}/${d.s} · 전체 ${d.t}</span></div>`;});
   sec.innerHTML=html;
 }
+function goArea(area){document.getElementById("fArea").value=area;document.getElementById("fState").value="wrong";setDateFilter("");switchTab("solve")}
+
+/* ===== 공통 ===== */
 function fillSel(id,ph,arr){const el=document.getElementById(id);const cur=el.value;
-  el.innerHTML=`<option value="">${ph}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join("");
-  if(arr.includes(cur))el.value=cur;}
+  el.innerHTML=`<option value="">${ph}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join("");if(arr.includes(cur))el.value=cur}
 function fillFilters(){
   fillSel("fSubject","전체 과목",[...new Set(QUESTIONS.map(q=>q.subject).filter(Boolean))].sort());
   fillSel("fArea","전체 영역",[...new Set(QUESTIONS.map(q=>q.area).filter(Boolean))].sort());
 }
-function renderAll(){renderHero();renderBadges();fillFilters();renderSolve();renderWrong();renderStats();updateDataInfo()}
+function renderAll(){renderHero();renderBadges();fillFilters();renderSolve();renderWrong();renderCal();renderStats();updateDataInfo()}
+function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));
+  ["solve","cal","wrong","stats","add","data"].forEach(id=>document.getElementById(id).hidden=(id!==name))}
+function setDateFilter(k){dateFilter=k;
+  document.querySelectorAll("#datebar .dbtn").forEach(b=>{
+    const val=b.dataset.d==="today"?today():b.dataset.d==="yday"?yesterday():"";b.classList.toggle("on",val===k)});
+  document.getElementById("datePick").value=k||"";
+  document.getElementById("dateLabel").textContent=k?`📅 ${fmtK(k)} 학습분만 표시 중`:"";
+  renderSolve();
+}
 
-/* ---------- 추가/수정 ---------- */
+/* ===== 추가/수정 ===== */
 function editQ(id){const q=QUESTIONS.find(x=>x.id===id);if(!q)return;
   const nq=prompt("문제 텍스트",q.q);if(nq===null)return;q.q=nq;
   for(let i=0;i<q.choices.length;i++){const c=prompt(`보기 ${i+1}`,q.choices[i]);if(c!==null)q.choices[i]=c}
-  const an=prompt("정답 번호(1~"+q.choices.length+")",q.answer);if(an!==null)q.answer=parseInt(an)||q.answer;
+  const an=prompt("정답 번호",q.answer);if(an!==null)q.answer=parseInt(an)||q.answer;
   const ex=prompt("해설",q.expl||"");if(ex!==null)q.expl=ex;
   const tp=prompt("암기 꿀팁(선택)",q.tip||"");if(tp!==null)q.tip=tp;
   const sub=prompt("과목",q.subject||"");if(sub!==null)q.subject=sub;
-  const ar=prompt("영역",q.area||"");if(ar!==null)q.area=ar;
-  saveQ();renderAll();}
-
+  const ar=prompt("영역",q.area||"");if(ar!==null)q.area=ar;saveQ();renderAll()}
 function parseBulk(text){
   const blocks=text.split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);const out=[];
-  blocks.forEach(b=>{
-    const lines=b.split(/\n/).map(l=>l.trim()).filter(Boolean);
-    let subject="",area="",qtext="",choices=[],answer=0,expl="",tip="",mode="q";
-    const cnum={"①":1,"②":2,"③":3,"④":4,"⑤":5};
+  blocks.forEach(b=>{const lines=b.split(/\n/).map(l=>l.trim()).filter(Boolean);
+    let subject="",area="",qtext="",choices=[],answer=0,expl="",tip="",mode="q";const cnum={"①":1,"②":2,"③":3,"④":4,"⑤":5};
     lines.forEach(line=>{let m;
       if((m=line.match(/^\[(.+?)\]$/))){const p=m[1].split(/[\/·,]/);subject=(p[0]||"").trim();area=(p[1]||"").trim();return}
       if((m=line.match(/^정답\s*[:：]?\s*([1-5①-⑤])/))){answer=cnum[m[1]]||parseInt(m[1])||0;mode="";return}
@@ -532,57 +611,49 @@ function parseBulk(text){
       if((m=line.match(/^꿀팁\s*[:：]?\s*(.*)$/))){tip=m[1];mode="t";return}
       if((m=line.match(/^\s*([①-⑤])\s*(.+)$/))){choices.push(m[2].trim());mode="";return}
       if((m=line.match(/^\s*([1-5])[\)\.．]\s*(.+)$/))){choices.push(m[2].trim());mode="";return}
-      if(mode==="t")tip+="\n"+line; else if(mode==="e")expl+="\n"+line; else if(mode==="q")qtext=qtext?qtext+" "+line:line;
-    });
-    if(qtext&&choices.length>=2)out.push({id:uid(),subject:subject||"경영학",area,q:qtext,choices,answer:answer||1,expl,tip});
-  });
+      if(mode==="t")tip+="\n"+line;else if(mode==="e")expl+="\n"+line;else if(mode==="q")qtext=qtext?qtext+" "+line:line});
+    if(qtext&&choices.length>=2)out.push({id:uid(),subject:subject||"경영학",area,q:qtext,choices,answer:answer||1,expl,tip})});
   return out;
 }
-function showPreview(items){
-  const box=document.getElementById("bulkPreview");
+function showPreview(items){const box=document.getElementById("bulkPreview");
   if(!items.length){box.innerHTML='<div class="empty">파싱된 문항이 없습니다. 형식을 확인하세요.</div>';return}
-  box.innerHTML=`<div class="hint">✅ ${items.length}개 문항이 인식되었습니다. 확인 후 추가하세요.</div>`;
+  box.innerHTML=`<div class="hint">✅ ${items.length}개 문항이 인식되었습니다.</div>`;
   items.forEach((q,i)=>{const d=document.createElement("div");d.className="q";
     d.innerHTML=`<div class="q-text">${i+1}. ${esc(q.q)}</div>
       <div class="choices">${q.choices.map((c,j)=>`<div class="choice ${j+1===q.answer?"ans":""}"><span class="num">${j+1}</span><span>${esc(c)}</span></div>`).join("")}</div>
       <div class="expl" style="margin-top:10px"><b>정답 ${q.answer}번.</b> ${esc(q.expl||"(해설 없음)")}</div>
-      ${q.tip?`<div class="tipbox"><div class="th">💡 암기 꿀팁</div><div class="tt">${esc(q.tip)}</div></div>`:""}`;
-    box.appendChild(d);});
-  const btn=document.createElement("button");btn.className="btn";btn.style.marginTop="14px";
-  btn.textContent=`이 ${items.length}개 문항 추가하기`;
-  btn.onclick=()=>{QUESTIONS=QUESTIONS.concat(items);saveQ();document.getElementById("bulkInput").value="";
-    box.innerHTML='<div class="hint">✅ 추가되었습니다. "문제풀이" 탭에서 확인하세요.</div>';renderAll()};
+      ${q.tip?`<div class="tipbox"><div class="th">💡 암기 꿀팁</div><div class="tt">${esc(q.tip)}</div></div>`:""}`;box.appendChild(d)});
+  const btn=document.createElement("button");btn.className="btn";btn.style.marginTop="14px";btn.textContent=`이 ${items.length}개 문항 추가하기`;
+  btn.onclick=()=>{QUESTIONS=QUESTIONS.concat(items);saveQ();document.getElementById("bulkInput").value="";box.innerHTML='<div class="hint">✅ 추가되었습니다.</div>';renderAll()};
   box.appendChild(btn);
 }
 
-/* ---------- 데이터 ---------- */
-function updateDataInfo(){document.getElementById("dataInfo").textContent=`현재 ${QUESTIONS.length}개 문항 저장됨 · 연속 학습 ${META.streak||1}일 · 최고 ${META.best||0}일.`}
-function exportJSON(){const blob=new Blob([JSON.stringify({questions:QUESTIONS,state:STATE,meta:META},null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="오답노트_백업_"+new Date().toISOString().slice(0,10)+".json";a.click();}
+/* ===== 데이터 ===== */
+function updateDataInfo(){document.getElementById("dataInfo").textContent=`문항 ${QUESTIONS.length}개 · 연속 ${META.streak||1}일 · 최고 ${META.best||0}일 · 학습한 날 ${Object.keys(LOG).length}일.`}
+function exportJSON(){const blob=new Blob([JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META},null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="합격부스터_백업_"+today()+".json";a.click()}
 function importJSON(){try{const o=JSON.parse(document.getElementById("ioBox").value);
-  if(Array.isArray(o))QUESTIONS=o;else{if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.meta)Object.assign(META,o.meta)}
-  saveQ();saveS();saveM();renderAll();alert("가져오기 완료!");}catch(e){alert("JSON 형식 오류: "+e.message)}}
+  if(Array.isArray(o))QUESTIONS=o;else{if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.log)LOG=o.log;if(o.meta)Object.assign(META,o.meta)}
+  saveQ();saveS();saveL();saveM();renderAll();alert("가져오기 완료!")}catch(e){alert("JSON 형식 오류: "+e.message)}}
 
-/* ---------- 탭/이벤트 ---------- */
-document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");
-  ["solve","wrong","stats","add","data"].forEach(id=>document.getElementById(id).hidden=(id!==t.dataset.tab));});
+/* ===== 이벤트 ===== */
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 ["fSubject","fArea","fState","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderSolve));
-document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록(정답/오답)을 초기화할까요? 별표·꿀팁 메모·문항은 유지됩니다.")){Object.keys(STATE).forEach(k=>{if(STATE[k])STATE[k].pick=0});saveS();renderAll()}};
+document.querySelectorAll("#datebar .dbtn").forEach(b=>b.onclick=()=>{const d=b.dataset.d;setDateFilter(d==="today"?today():d==="yday"?yesterday():"")});
+document.getElementById("datePick").addEventListener("change",e=>setDateFilter(e.target.value));
+document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 잔디는 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0}});saveS();renderAll()}};
 document.getElementById("todayReview").onclick=()=>{
   const pool=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return(s.pick>0&&s.pick!==q.answer)||s.flag});
-  const src=pool.length?pool:QUESTIONS;if(!src.length)return;
-  const pick=src[Math.floor(Math.random()*src.length)];
-  document.getElementById("fState").value="";document.getElementById("fSearch").value="";
-  renderSolve();const cards=document.querySelectorAll("#solveList .q");const idx=QUESTIONS.indexOf(pick);
+  const src=pool.length?pool:QUESTIONS;if(!src.length)return;const pick=src[Math.floor(Math.random()*src.length)];
+  setDateFilter("");document.getElementById("fState").value="";document.getElementById("fSearch").value="";renderSolve();
+  const idx=QUESTIONS.indexOf(pick);const cards=document.querySelectorAll("#solveList .q");
   const target=[...cards].find(c=>c.querySelector(".q-no")&&c.querySelector(".q-no").textContent==(idx+1));
-  if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.style.outline="3px solid #7a5cff";setTimeout(()=>target.style.outline="",1600)}
-};
+  if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.style.outline="3px solid #7a5cff";setTimeout(()=>target.style.outline="",1600)}};
 document.getElementById("bulkParse").onclick=()=>showPreview(parseBulk(document.getElementById("bulkInput").value));
 document.getElementById("bulkClear").onclick=()=>{document.getElementById("bulkInput").value="";document.getElementById("bulkPreview").innerHTML=""};
 document.getElementById("exportBtn").onclick=exportJSON;
 document.getElementById("importBtn").onclick=importJSON;
-document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 25문항을 다시 추가할까요? (기존 문항은 유지)")){QUESTIONS=QUESTIONS.concat(SEED.map(x=>mk(uid(),x)));saveQ();renderAll()}};
+document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 25문항을 다시 추가할까요?")){QUESTIONS=QUESTIONS.concat(SEED.map(x=>mk(uid(),x)));saveQ();renderAll()}};
 
 load();renderAll();
 </script>
