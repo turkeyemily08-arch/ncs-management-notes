@@ -457,10 +457,17 @@ function filtered(){
     return true;
   });
 }
+function solveRank(q){const s=STATE[q.id]||{};if(!s.pick)return 0;return s.pick===q.answer?2:1} // 0:안푼 1:틀림 2:맞음
 function renderSolve(){
   const box=document.getElementById("solveList");box.innerHTML="";
-  const list=filtered();
+  let list=filtered();
+  // 상태 필터를 안 걸었을 땐 '안 푼 것 → 틀린 것 → 맞은 것' 순으로 자동 정렬(맞은 건 아래로 밀림)
+  if(!v("fState")){list=[...list].sort((a,b)=>solveRank(a)-solveRank(b))}
   if(!list.length){box.innerHTML='<div class="empty">조건에 맞는 문항이 없습니다.</div>';return}
+  const todo=list.filter(q=>!solveRank(q)).length;
+  if(!v("fState")&&!v("fSearch")&&!v("fSubject")&&!v("fArea")){
+    box.innerHTML=`<div class="hint">📌 안 푼 문제 <b>${todo}개</b>를 위로 모았어요. 푼 문제는 아래로 내려갑니다. 이어서 풀어보세요!</div>`;
+  }
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
 function renderWrong(){
