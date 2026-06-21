@@ -85,6 +85,7 @@
   .chip{background:var(--chip);color:#5566aa;font-size:11.5px;padding:3px 10px;border-radius:20px;font-weight:600}
   .datestamp{font-size:11px;color:var(--muted)}
   .srctag{font-size:11px;color:#8a93a8;font-weight:800;background:#f0f3fa;border:1px solid var(--line);padding:2px 8px;border-radius:20px}
+  label.fld{display:block;margin:12px 0 5px;font-size:13px;font-weight:700;color:var(--muted)}
   .q-text{font-size:15.5px;font-weight:700;white-space:pre-wrap;margin-bottom:12px;line-height:1.5}
   .choices{display:flex;flex-direction:column;gap:8px}
   .choice{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);
@@ -242,15 +243,39 @@
       <button class="btn ghost" id="importBtn">JSON 가져오기(붙여넣기)</button>
       <button class="btn ghost" id="seedBtn">기본 문항 다시 넣기</button>
     </div>
-    <textarea class="io" id="ioBox" rows="11" style="margin-top:12px" placeholder="가져오기: 여기에 JSON을 붙여넣고 '가져오기' 버튼"></textarea>
+    <textarea class="io" id="ioBox" rows="8" style="margin-top:12px" placeholder="가져오기: 여기에 JSON을 붙여넣고 '가져오기' 버튼"></textarea>
     <div class="pill" id="dataInfo" style="margin-top:8px"></div>
+
+    <div class="card" style="margin-top:18px">
+      <h3 style="margin-top:0">☁️ 기기 간 자동 동기화 (모바일 ↔ PC)</h3>
+      <div class="hint" style="margin-bottom:12px">
+        PC·모바일에서 <b>같은 '동기화 코드'</b>를 입력하면 푼 기록·별표·연속일이 자동으로 합쳐집니다. 처음 한 번만 무료 Firebase 설정을 붙여넣으면 끝!<br>
+        <b>설정 방법</b>: ① <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a>에서 프로젝트 생성 → ② '웹 앱(&lt;/&gt;)' 추가 후 나오는 <code>firebaseConfig</code> 객체 복사 → ③ 빌드 메뉴 <b>Firestore Database</b> 만들기(테스트 모드) → ④ 아래에 붙여넣기.
+      </div>
+      <label class="fld">Firebase 설정 (firebaseConfig {…} 통째로 붙여넣기)</label>
+      <textarea class="io" id="fbConfig" rows="6" placeholder='{ "apiKey": "...", "authDomain": "...", "projectId": "...", ... }'></textarea>
+      <label class="fld">동기화 코드 (PC·모바일에 똑같이 입력할 나만의 비밀 단어)</label>
+      <input type="text" id="syncCode" placeholder="예: mystudy-2026" style="width:100%">
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="syncEnable">🔗 동기화 켜기</button>
+        <button class="btn ghost" id="syncPush">⬆️ 지금 올리기</button>
+        <button class="btn ghost" id="syncPull">⬇️ 지금 받기</button>
+        <button class="btn ghost" id="syncOff">동기화 끄기</button>
+      </div>
+      <div class="pill" id="syncStatus" style="margin-top:10px">동기화 꺼짐</div>
+    </div>
   </section>
 </main>
 
+<!-- Firebase (자동 동기화용) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
-const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1", LS_LOG="ohap_log_v1";
+const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1", LS_LOG="ohap_log_v1", LS_SYNC="ohap_sync_v1";
 let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10};
 let dateFilter=""; // "" | "YYYY-MM-DD"
+let SYNC={config:"",code:"",on:false}, fbDoc=null, fbReady=false, pushTimer=null;
 
 /* ===== 기본 25문항 + 꿀팁 ===== */
 const SEED=[
@@ -603,6 +628,7 @@ function load(){
   try{STATE=JSON.parse(localStorage.getItem(LS_ANS))||{}}catch(e){STATE={}}
   try{LOG=JSON.parse(localStorage.getItem(LS_LOG))||{}}catch(e){LOG={}}
   try{Object.assign(META,JSON.parse(localStorage.getItem(LS_META))||{})}catch(e){}
+  try{Object.assign(SYNC,JSON.parse(localStorage.getItem(LS_SYNC))||{})}catch(e){}
   syncSeed();
   updateStreak();
 }
@@ -615,10 +641,67 @@ function syncSeed(){
       META.seeded.push(id);changed=true;}});
   if(changed){saveQ();saveM();}
 }
-function saveQ(){localStorage.setItem(LS_DATA,JSON.stringify(QUESTIONS))}
-function saveS(){localStorage.setItem(LS_ANS,JSON.stringify(STATE))}
-function saveL(){localStorage.setItem(LS_LOG,JSON.stringify(LOG))}
+function saveQ(){localStorage.setItem(LS_DATA,JSON.stringify(QUESTIONS));syncTouch()}
+function saveS(){localStorage.setItem(LS_ANS,JSON.stringify(STATE));syncTouch()}
+function saveL(){localStorage.setItem(LS_LOG,JSON.stringify(LOG));syncTouch()}
 function saveM(){localStorage.setItem(LS_META,JSON.stringify(META))}
+function saveSync(){localStorage.setItem(LS_SYNC,JSON.stringify(SYNC))}
+
+/* ===== 클라우드 동기화 (Firebase Firestore) ===== */
+function setSyncStatus(t){const el=document.getElementById("syncStatus");if(el)el.textContent=t}
+function syncTouch(){ // 로컬 저장이 일어날 때마다 호출 → 클라우드 업로드 예약
+  if(!SYNC.on)return;
+  META.savedAt=Date.now();localStorage.setItem(LS_META,JSON.stringify(META));
+  cloudPush();
+}
+function initFirebase(){
+  if(!SYNC.config||!SYNC.code){setSyncStatus("⚠️ 설정·코드를 먼저 입력하세요");return false}
+  if(typeof firebase==="undefined"){setSyncStatus("⚠️ 네트워크 연결 필요(Firebase 로드 실패)");return false}
+  try{
+    const cfg=JSON.parse(SYNC.config);
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    fbDoc=firebase.firestore().collection("ohap_sync").doc(SYNC.code);
+    fbReady=true;return true;
+  }catch(e){setSyncStatus("⚠️ 설정 오류: "+e.message);fbReady=false;return false}
+}
+function cloudPayload(){return JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META})}
+function cloudPush(immediate){
+  if(!fbReady||!fbDoc)return;
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(()=>{
+    fbDoc.set({payload:cloudPayload(),updatedAt:Date.now()})
+      .then(()=>setSyncStatus("☁️ 올림 "+new Date().toLocaleTimeString()))
+      .catch(e=>setSyncStatus("⚠️ 업로드 실패: "+e.message));
+  }, immediate?0:1500);
+}
+function adoptCloud(o){
+  if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.log)LOG=o.log;if(o.meta)Object.assign(META,o.meta);
+  localStorage.setItem(LS_DATA,JSON.stringify(QUESTIONS));localStorage.setItem(LS_ANS,JSON.stringify(STATE));
+  localStorage.setItem(LS_LOG,JSON.stringify(LOG));localStorage.setItem(LS_META,JSON.stringify(META));
+  syncSeed();renderAll();
+}
+function cloudPull(manual){
+  if(!fbReady||!fbDoc){if(manual)setSyncStatus("⚠️ 동기화를 먼저 켜세요");return}
+  setSyncStatus("⏳ 받는 중…");
+  fbDoc.get().then(snap=>{
+    if(snap.exists){adoptCloud(JSON.parse(snap.data().payload));setSyncStatus("⬇️ 받음 "+new Date().toLocaleTimeString());}
+    else setSyncStatus("☁️ 클라우드에 저장된 기록이 아직 없어요");
+  }).catch(e=>setSyncStatus("⚠️ 받기 실패: "+e.message));
+}
+// 켜진 상태로 로드되면: 클라우드가 더 최신이면 받고, 아니면 올림
+function cloudSyncOnLoad(){
+  if(!SYNC.on)return;
+  if(!initFirebase())return;
+  const localTs=META.savedAt||0;
+  setSyncStatus("⏳ 동기화 중…");
+  fbDoc.get().then(snap=>{
+    if(snap.exists){
+      const d=snap.data();
+      if((d.updatedAt||0)>localTs){adoptCloud(JSON.parse(d.payload));setSyncStatus("⬇️ 최신 기록 받음");}
+      else{cloudPush(true);setSyncStatus("⬆️ 이 기기 기록을 올림");}
+    }else{cloudPush(true);setSyncStatus("☁️ 첫 업로드 완료");}
+  }).catch(e=>setSyncStatus("⚠️ "+e.message));
+}
 function seed(){QUESTIONS=SEED.map((x,i)=>mk("seed"+(i+1),x));saveQ()}
 function mk(id,x){return{id,subject:x.s,area:x.a,q:x.q,choices:x.c,answer:x.ans,expl:x.e,tip:x.t||"",src:x.src||""}}
 function uid(){return"q"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
@@ -973,9 +1056,26 @@ document.getElementById("bulkParse").onclick=()=>showPreview(parseBulk(document.
 document.getElementById("bulkClear").onclick=()=>{document.getElementById("bulkInput").value="";document.getElementById("bulkPreview").innerHTML=""};
 document.getElementById("exportBtn").onclick=exportJSON;
 document.getElementById("importBtn").onclick=importJSON;
-document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 25문항을 다시 추가할까요?")){QUESTIONS=QUESTIONS.concat(SEED.map(x=>mk(uid(),x)));saveQ();renderAll()}};
+document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 문항을 다시 추가할까요?")){QUESTIONS=QUESTIONS.concat(SEED.map(x=>mk(uid(),x)));saveQ();renderAll()}};
 
-load();renderAll();
+/* 동기화 버튼 */
+document.getElementById("syncEnable").onclick=()=>{
+  SYNC.config=document.getElementById("fbConfig").value.trim();
+  SYNC.code=document.getElementById("syncCode").value.trim();
+  if(!SYNC.config||!SYNC.code){setSyncStatus("⚠️ Firebase 설정과 동기화 코드를 모두 입력하세요");return}
+  SYNC.on=true;saveSync();
+  if(initFirebase()){setSyncStatus("🔗 동기화 켜짐 — 연결 중…");cloudSyncOnLoad();}
+};
+document.getElementById("syncPush").onclick=()=>{if(!fbReady&&!initFirebase())return;cloudPush(true)};
+document.getElementById("syncPull").onclick=()=>{if(!fbReady&&!initFirebase())return;if(confirm("클라우드 기록으로 이 기기를 덮어쓸까요?"))cloudPull(true)};
+document.getElementById("syncOff").onclick=()=>{SYNC.on=false;fbReady=false;saveSync();setSyncStatus("동기화 꺼짐")};
+function restoreSyncUI(){
+  document.getElementById("fbConfig").value=SYNC.config||"";
+  document.getElementById("syncCode").value=SYNC.code||"";
+  setSyncStatus(SYNC.on?"🔗 동기화 켜짐":"동기화 꺼짐");
+}
+
+load();renderAll();restoreSyncUI();cloudSyncOnLoad();
 </script>
 </body>
 </html>
