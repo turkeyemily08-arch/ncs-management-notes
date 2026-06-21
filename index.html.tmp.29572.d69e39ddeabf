@@ -644,6 +644,7 @@ function v(id){return document.getElementById(id).value}
 function filtered(){
   const sub=v("fSubject"),ar=v("fArea"),stt=v("fState"),kw=(v("fSearch")||"").trim().toLowerCase();
   return QUESTIONS.filter(q=>{
+    if(dateFilter){const lg=LOG[dateFilter];if(!lg||!lg.ids.includes(q.id))return false}
     if(sub&&q.subject!==sub)return false;
     if(ar&&q.area!==ar)return false;
     if(kw&&!((q.q+q.choices.join(" ")+(q.expl||"")).toLowerCase().includes(kw)))return false;
@@ -655,53 +656,31 @@ function filtered(){
     return true;
   });
 }
-function plus2(){const d=new Date();d.setDate(d.getDate()+2);return iso(d)} // 이틀 후 날짜
-function dueList(){return QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return s.review&&s.review<=today()&&s.pick>0&&s.pick!==q.answer})}
-
-// 전체문항 (기본 홈)
-function renderTotal(){
-  const box=document.getElementById("allList");box.innerHTML="";
-  const list=filtered();const due=dueList().length;
-  let head=`<div class="hint">📚 전체 <b>${QUESTIONS.length}문항</b> · 표시 중 ${list.length}개`;
-  if(due>0)head+=` &nbsp;|&nbsp; 🔁 <b style="color:#e5484d">이틀 전 틀린 ${due}문항</b> 복습 시간! <a href="#" id="goReview" style="color:#4f7cff;font-weight:800">오답노트로 →</a>`;
-  head+=`</div>`;box.innerHTML=head;
-  const ge=document.getElementById("goReview");if(ge)ge.onclick=e=>{e.preventDefault();switchTab("wrong")};
-  if(!list.length){box.insertAdjacentHTML("beforeend",'<div class="empty">조건에 맞는 문항이 없습니다.</div>');return}
-  list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
-}
-// 학습하기: 안 푼 문항만
+function solveRank(q){const s=STATE[q.id]||{};if(!s.pick)return 0;return s.pick===q.answer?2:1}
 function renderSolve(){
   const box=document.getElementById("solveList");box.innerHTML="";
-  const sub=v("sSubject");
-  const list=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};if(s.pick>0)return false;if(sub&&q.subject!==sub)return false;return true});
-  if(!list.length){box.innerHTML='<div class="empty">🎉 안 푼 문제가 없어요! 전체문항·오답노트에서 복습하세요.</div>';return}
-  box.innerHTML=`<div class="hint">📌 아직 안 푼 문제 <b>${list.length}개</b>. 하나씩 풀어볼까요?</div>`;
+  let list=filtered();
+  if(!v("fState")&&!dateFilter)list=[...list].sort((a,b)=>solveRank(a)-solveRank(b));
+  if(!list.length){box.innerHTML='<div class="empty">'+(dateFilter?fmtK(dateFilter)+"에 푼 문제가 없어요.":"조건에 맞는 문항이 없습니다.")+'</div>';return}
+  if(!dateFilter&&!v("fState")&&!v("fSearch")&&!v("fSubject")&&!v("fArea")){
+    const todo=list.filter(q=>!solveRank(q)).length;
+    box.innerHTML=`<div class="hint">📌 안 푼 문제 <b>${todo}개</b>를 위로 모았어요. 푼 문제는 아래로 내려갑니다!</div>`;
+  } else if(dateFilter){
+    const lg=LOG[dateFilter]||{ids:[],correct:0};
+    box.innerHTML=`<div class="hint">🗓 <b>${fmtK(dateFilter)}</b>에 푼 문제 ${lg.ids.length}개 · 정답 ${lg.correct}개</div>`;
+  }
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
-// 별표만
-function renderStar(){
-  const box=document.getElementById("starList");box.innerHTML="";
-  const list=QUESTIONS.filter(q=>(STATE[q.id]||{}).flag);
-  if(!list.length){box.insertAdjacentHTML("beforeend",'<div class="empty">⭐ 아직 별표한 문항이 없어요. 문항의 ☆ 버튼을 눌러 추가하세요.</div>');return}
-  list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
-}
-// 오답노트: 오늘 복습(이틀 전 틀린 것) + 틀린 문항 모음
 function renderWrong(){
   const box=document.getElementById("wrongList");box.innerHTML="";
-  const due=dueList();const dueIds=new Set(due.map(q=>q.id));
-  const wrong=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return s.pick>0&&s.pick!==q.answer&&!dueIds.has(q.id)});
-  if(due.length){
-    box.insertAdjacentHTML("beforeend",`<div class="hint" style="border-color:#f3c6c8">🔁 <b>오늘 복습 — 이틀 전 틀린 ${due.length}문항</b>입니다. 다시 풀어 정답률을 높여보세요!</div>`);
-    due.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1,{quiz:true})));
-  }
-  box.insertAdjacentHTML("beforeend",`<div class="hint">❌ 틀린 문항 모음 (${wrong.length}개)</div>`);
-  if(!wrong.length&&!due.length){box.insertAdjacentHTML("beforeend",'<div class="empty">아직 틀린 문항이 없습니다. 👍</div>');return}
-  wrong.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
+  const list=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return(s.pick>0&&s.pick!==q.answer)||s.flag});
+  if(!list.length){box.innerHTML='<div class="empty">아직 오답이 없습니다. 문제를 풀어보세요! 👍</div>';return}
+  list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
 
 /* ===== 학습기록 (캘린더) ===== */
 function renderCal(){
-  const sec=document.getElementById("calBody");
+  const sec=document.getElementById("cal");
   const end=new Date();const start=new Date();start.setDate(end.getDate()-7*12);start.setDate(start.getDate()-start.getDay());
   let cells="";const days=Math.round((end-start)/86400000)+1;
   let studyDays=0,weekCount=0;const weekAgo=new Date();weekAgo.setDate(end.getDate()-6);
@@ -727,17 +706,9 @@ function renderCal(){
       <h3 style="margin-top:0">🌱 학습 잔디 (최근 12주)</h3>
       <div class="cal">${cells}</div>
       <div class="callegend">적음 <span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span> 많음
-        &nbsp;·&nbsp; 칸을 클릭하면 그날 푼 문제를 아래에서 볼 수 있어요.</div>
+        &nbsp;·&nbsp; 칸을 클릭하면 그날 푼 문제를 볼 수 있어요.</div>
     </div>`;
-  sec.querySelectorAll(".cell.has").forEach(el=>el.onclick=()=>setDateFilter(el.dataset.k));
-  // 선택한 날짜에 푼 문항 목록
-  const dl=document.getElementById("dateList");dl.innerHTML="";
-  if(dateFilter){
-    const lg=LOG[dateFilter]||{ids:[],correct:0};
-    dl.innerHTML=`<div class="hint">🗓 <b>${fmtK(dateFilter)}</b>에 푼 문제 ${lg.ids.length}개 · 정답 ${lg.correct}개</div>`;
-    QUESTIONS.forEach(q=>{if(lg.ids.includes(q.id))dl.appendChild(qCard(q,QUESTIONS.indexOf(q)+1))});
-    if(!lg.ids.length)dl.insertAdjacentHTML("beforeend",`<div class="empty">${fmtK(dateFilter)}에 푼 문제가 없어요.</div>`);
-  }
+  sec.querySelectorAll(".cell.has").forEach(el=>el.onclick=()=>{setDateFilter(el.dataset.k);switchTab("solve")});
 }
 
 /* ===== 통계·약점 ===== */
@@ -771,26 +742,24 @@ function renderStats(){
     html+=`<div class="weakitem"><span class="nm">${esc(k)}</span><div class="progress"><i style="width:${a}%"></i></div><span class="pill">${d.c}/${d.s} · 전체 ${d.t}</span></div>`;});
   sec.innerHTML=html;
 }
-function goArea(area){document.getElementById("fArea").value=area;document.getElementById("fState").value="wrong";switchTab("all");renderTotal()}
+function goArea(area){document.getElementById("fArea").value=area;document.getElementById("fState").value="wrong";setDateFilter("");switchTab("solve")}
 
 /* ===== 공통 ===== */
 function fillSel(id,ph,arr){const el=document.getElementById(id);const cur=el.value;
   el.innerHTML=`<option value="">${ph}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join("");if(arr.includes(cur))el.value=cur}
 function fillFilters(){
-  const subs=[...new Set(QUESTIONS.map(q=>q.subject).filter(Boolean))].sort();
-  fillSel("fSubject","전체 과목",subs);
-  fillSel("sSubject","전체 과목",subs);
+  fillSel("fSubject","전체 과목",[...new Set(QUESTIONS.map(q=>q.subject).filter(Boolean))].sort());
   fillSel("fArea","전체 영역",[...new Set(QUESTIONS.map(q=>q.area).filter(Boolean))].sort());
 }
-function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderStar();renderWrong();renderCal();renderStats();updateDataInfo()}
+function renderAll(){renderHero();renderBadges();fillFilters();renderSolve();renderWrong();renderCal();renderStats();updateDataInfo()}
 function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));
-  ["all","solve","cal","wrong","stats","add","data","star"].forEach(id=>document.getElementById(id).hidden=(id!==name))}
+  ["solve","cal","wrong","stats","add","data"].forEach(id=>document.getElementById(id).hidden=(id!==name))}
 function setDateFilter(k){dateFilter=k;
   document.querySelectorAll("#datebar .dbtn").forEach(b=>{
     const val=b.dataset.d==="today"?today():b.dataset.d==="yday"?yesterday():"";b.classList.toggle("on",val===k)});
   document.getElementById("datePick").value=k||"";
-  document.getElementById("dateLabel").textContent=k?`📅 ${fmtK(k)} 학습분`:"";
-  renderCal();
+  document.getElementById("dateLabel").textContent=k?`📅 ${fmtK(k)} 학습분만 표시 중`:"";
+  renderSolve();
 }
 
 /* ===== 추가/수정 ===== */
@@ -840,15 +809,14 @@ function importJSON(){try{const o=JSON.parse(document.getElementById("ioBox").va
 
 /* ===== 이벤트 ===== */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
-["fSubject","fArea","fState","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderTotal));
-document.getElementById("sSubject").addEventListener("input",renderSolve);
+["fSubject","fArea","fState","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderSolve));
 document.querySelectorAll("#datebar .dbtn").forEach(b=>b.onclick=()=>{const d=b.dataset.d;setDateFilter(d==="today"?today():d==="yday"?yesterday():"")});
 document.getElementById("datePick").addEventListener("change",e=>setDateFilter(e.target.value));
-document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 잔디는 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0;delete STATE[k].review}});saveS();renderAll()}};
+document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 잔디는 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0}});saveS();renderAll()}};
 document.getElementById("todayReview").onclick=()=>{
-  const list=QUESTIONS.filter(q=>!((STATE[q.id]||{}).pick>0));if(!list.length)return;
-  const pick=list[Math.floor(Math.random()*list.length)];
-  document.getElementById("sSubject").value="";renderSolve();
+  const pool=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return(s.pick>0&&s.pick!==q.answer)||s.flag});
+  const src=pool.length?pool:QUESTIONS;if(!src.length)return;const pick=src[Math.floor(Math.random()*src.length)];
+  setDateFilter("");document.getElementById("fState").value="";document.getElementById("fSearch").value="";renderSolve();
   const idx=QUESTIONS.indexOf(pick);const cards=document.querySelectorAll("#solveList .q");
   const target=[...cards].find(c=>c.querySelector(".q-no")&&c.querySelector(".q-no").textContent==(idx+1));
   if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.style.outline="3px solid #7a5cff";setTimeout(()=>target.style.outline="",1600)}};
