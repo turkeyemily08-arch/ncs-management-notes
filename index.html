@@ -249,10 +249,9 @@
     <div class="card" style="margin-top:18px">
       <h3 style="margin-top:0">☁️ 기기 간 자동 동기화 (모바일 ↔ PC)</h3>
       <div class="hint" style="margin-bottom:12px">
-        PC·모바일에서 <b>같은 '동기화 코드'</b>를 입력하면 푼 기록·별표·연속일이 자동으로 합쳐집니다. 처음 한 번만 무료 Firebase 설정을 붙여넣으면 끝!<br>
-        <b>설정 방법</b>: ① <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a>에서 프로젝트 생성 → ② '웹 앱(&lt;/&gt;)' 추가 후 나오는 <code>firebaseConfig</code> 객체 복사 → ③ 빌드 메뉴 <b>Firestore Database</b> 만들기(테스트 모드) → ④ 아래에 붙여넣기.
+        Firebase 설정은 <b>이미 입력돼 있습니다.</b> PC·모바일에서 <b>같은 '동기화 코드'</b>만 정해 입력하고 <b>🔗 동기화 켜기</b>를 누르면, 푼 기록·별표·연속일이 자동으로 합쳐집니다. (설정값은 바꿀 일이 없으면 그대로 두세요.)
       </div>
-      <label class="fld">Firebase 설정 (firebaseConfig {…} 통째로 붙여넣기)</label>
+      <label class="fld">Firebase 설정 (이미 입력됨 — 보통 손댈 필요 없음)</label>
       <textarea class="io" id="fbConfig" rows="6" placeholder='{ "apiKey": "...", "authDomain": "...", "projectId": "...", ... }'></textarea>
       <label class="fld">동기화 코드 (PC·모바일에 똑같이 입력할 나만의 비밀 단어)</label>
       <input type="text" id="syncCode" placeholder="예: mystudy-2026" style="width:100%">
@@ -276,6 +275,15 @@ const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_
 let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10};
 let dateFilter=""; // "" | "YYYY-MM-DD"
 let SYNC={config:"",code:"",on:false}, fbDoc=null, fbReady=false, pushTimer=null;
+// 기본 Firebase 설정(공개되어도 안전한 웹 config). 모바일에선 동기화 코드만 입력하면 됨.
+const DEFAULT_FB_CONFIG=`{
+  "apiKey": "AIzaSyAzHQChcR4IiKzQcWBqhuxJ3AA2Cpnw_Ws",
+  "authDomain": "ncs-study-c0cb6.firebaseapp.com",
+  "projectId": "ncs-study-c0cb6",
+  "storageBucket": "ncs-study-c0cb6.firebasestorage.app",
+  "messagingSenderId": "1008821017719",
+  "appId": "1:1008821017719:web:62cc7dd6f98ca03e44fa72"
+}`;
 
 /* ===== 기본 25문항 + 꿀팁 ===== */
 const SEED=[
@@ -654,11 +662,18 @@ function syncTouch(){ // 로컬 저장이 일어날 때마다 호출 → 클라�
   META.savedAt=Date.now();localStorage.setItem(LS_META,JSON.stringify(META));
   cloudPush();
 }
+function parseConfig(str){ // JSON·JS객체 리터럴 모두 허용
+  str=(str||"").trim();const m=str.match(/\{[\s\S]*\}/);if(m)str=m[0];
+  try{return JSON.parse(str)}catch(e){}
+  try{return Function("return ("+str+")")()}catch(e){}
+  return null;
+}
 function initFirebase(){
-  if(!SYNC.config||!SYNC.code){setSyncStatus("⚠️ 설정·코드를 먼저 입력하세요");return false}
+  const cfgStr=SYNC.config||DEFAULT_FB_CONFIG;
+  if(!SYNC.code){setSyncStatus("⚠️ 동기화 코드를 먼저 입력하세요");return false}
   if(typeof firebase==="undefined"){setSyncStatus("⚠️ 네트워크 연결 필요(Firebase 로드 실패)");return false}
   try{
-    const cfg=JSON.parse(SYNC.config);
+    const cfg=parseConfig(cfgStr);if(!cfg)throw new Error("설정 형식 오류");
     if(!firebase.apps.length)firebase.initializeApp(cfg);
     fbDoc=firebase.firestore().collection("ohap_sync").doc(SYNC.code);
     fbReady=true;return true;
@@ -1060,9 +1075,10 @@ document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 문항을 다
 
 /* 동기화 버튼 */
 document.getElementById("syncEnable").onclick=()=>{
-  SYNC.config=document.getElementById("fbConfig").value.trim();
+  const cfg=document.getElementById("fbConfig").value.trim();
+  SYNC.config=(cfg&&cfg!==DEFAULT_FB_CONFIG.trim())?cfg:""; // 기본값이면 굳이 저장 안 함
   SYNC.code=document.getElementById("syncCode").value.trim();
-  if(!SYNC.config||!SYNC.code){setSyncStatus("⚠️ Firebase 설정과 동기화 코드를 모두 입력하세요");return}
+  if(!SYNC.code){setSyncStatus("⚠️ 동기화 코드를 입력하세요(PC·모바일 동일하게)");return}
   SYNC.on=true;saveSync();
   if(initFirebase()){setSyncStatus("🔗 동기화 켜짐 — 연결 중…");cloudSyncOnLoad();}
 };
@@ -1070,9 +1086,9 @@ document.getElementById("syncPush").onclick=()=>{if(!fbReady&&!initFirebase())re
 document.getElementById("syncPull").onclick=()=>{if(!fbReady&&!initFirebase())return;if(confirm("클라우드 기록으로 이 기기를 덮어쓸까요?"))cloudPull(true)};
 document.getElementById("syncOff").onclick=()=>{SYNC.on=false;fbReady=false;saveSync();setSyncStatus("동기화 꺼짐")};
 function restoreSyncUI(){
-  document.getElementById("fbConfig").value=SYNC.config||"";
+  document.getElementById("fbConfig").value=SYNC.config||DEFAULT_FB_CONFIG;
   document.getElementById("syncCode").value=SYNC.code||"";
-  setSyncStatus(SYNC.on?"🔗 동기화 켜짐":"동기화 꺼짐");
+  setSyncStatus(SYNC.on?"🔗 동기화 켜짐":"동기화 꺼짐 — 코드만 입력하고 켜기를 누르세요");
 }
 
 load();renderAll();restoreSyncUI();cloudSyncOnLoad();
