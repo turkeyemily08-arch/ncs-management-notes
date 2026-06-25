@@ -147,6 +147,8 @@
     <button class="tab active" data-tab="all">📚 전체문항</button>
     <button class="tab" data-tab="solve">학습하기</button>
     <button class="tab" data-tab="cal">학습기록</button>
+    <button class="tab" data-tab="mock">📊 모의고사</button>
+    <button class="tab" data-tab="course">🎧 강의</button>
     <button class="tab" data-tab="wrong">오답노트</button>
     <button class="tab" data-tab="stats">통계·약점</button>
     <button class="tab" data-tab="add">문항추가</button>
@@ -196,6 +198,39 @@
     </div>
     <div id="calBody"></div>
     <div id="dateList"></div>
+  </section>
+
+  <!-- 모의고사 기록 -->
+  <section id="mock" hidden>
+    <div class="card">
+      <h3 style="margin-top:0">📊 모의고사 점수 기록</h3>
+      <div class="row">
+        <div style="flex:1;min-width:130px"><label class="fld">날짜</label><input type="date" id="mDate" style="width:100%"></div>
+        <div style="flex:1;min-width:130px"><label class="fld">출처</label><input type="text" id="mSrc" placeholder="위포트 1회" style="width:100%"></div>
+        <div style="flex:1;min-width:80px"><label class="fld">총점</label><input type="number" id="mTotal" placeholder="80" style="width:100%"></div>
+        <div style="flex:1;min-width:80px"><label class="fld">시간(분)</label><input type="number" id="mTime" placeholder="50" style="width:100%"></div>
+      </div>
+      <label class="fld">영역별 점수 (해당하는 것만 입력)</label>
+      <div class="row" id="mAreas"></div>
+      <label class="fld">메모</label>
+      <input type="text" id="mMemo" placeholder="예: 자원관리에서 시간 부족" style="width:100%">
+      <button class="btn" id="mAdd" style="margin-top:12px">➕ 기록 추가</button>
+    </div>
+    <div id="mockBody"></div>
+  </section>
+
+  <!-- 강의 팔로업 -->
+  <section id="course" hidden>
+    <div class="card">
+      <h3 style="margin-top:0">🎧 강의 팔로업</h3>
+      <div class="row">
+        <div style="flex:2;min-width:160px"><label class="fld">강좌명</label><input type="text" id="cName" placeholder="경영학 기본이론" style="width:100%"></div>
+        <div style="flex:1;min-width:110px"><label class="fld">강사(선택)</label><input type="text" id="cTeacher" placeholder="홍길동" style="width:100%"></div>
+        <div style="flex:1;min-width:90px"><label class="fld">총 강의수</label><input type="number" id="cTotal" placeholder="40" style="width:100%"></div>
+      </div>
+      <button class="btn" id="cAdd" style="margin-top:12px">➕ 강좌 추가</button>
+    </div>
+    <div id="courseBody"></div>
   </section>
 
   <!-- 오답노트 -->
@@ -271,8 +306,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1", LS_LOG="ohap_log_v1", LS_SYNC="ohap_sync_v1";
-let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10};
+const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_v1", LS_LOG="ohap_log_v1", LS_SYNC="ohap_sync_v1", LS_EXAM="ohap_exams_v1", LS_COURSE="ohap_courses_v1";
+const NCS_AREAS=["의사소통","수리","문제해결","자원관리","조직이해","정보"];
+let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10}, EXAMS=[], COURSES=[];
 let dateFilter=""; // "" | "YYYY-MM-DD"
 let SYNC={config:"",code:"",on:false}, fbDoc=null, fbReady=false, pushTimer=null;
 // 기본 Firebase 설정(공개되어도 안전한 웹 config). 모바일에선 동기화 코드만 입력하면 됨.
@@ -637,9 +673,13 @@ function load(){
   try{LOG=JSON.parse(localStorage.getItem(LS_LOG))||{}}catch(e){LOG={}}
   try{Object.assign(META,JSON.parse(localStorage.getItem(LS_META))||{})}catch(e){}
   try{Object.assign(SYNC,JSON.parse(localStorage.getItem(LS_SYNC))||{})}catch(e){}
+  try{EXAMS=JSON.parse(localStorage.getItem(LS_EXAM))||[]}catch(e){EXAMS=[]}
+  try{COURSES=JSON.parse(localStorage.getItem(LS_COURSE))||[]}catch(e){COURSES=[]}
   syncSeed();
   updateStreak();
 }
+function saveExams(){localStorage.setItem(LS_EXAM,JSON.stringify(EXAMS));syncTouch()}
+function saveCourses(){localStorage.setItem(LS_COURSE,JSON.stringify(COURSES));syncTouch()}
 // SEED에 새 문항을 추가하면, 기존 사용자의 진도·기록을 유지한 채 새 문항만 자동 병합된다.
 function syncSeed(){
   META.seeded=META.seeded||[];let changed=false;
@@ -679,7 +719,7 @@ function initFirebase(){
     fbReady=true;return true;
   }catch(e){setSyncStatus("⚠️ 설정 오류: "+e.message);fbReady=false;return false}
 }
-function cloudPayload(){return JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META})}
+function cloudPayload(){return JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META,exams:EXAMS,courses:COURSES})}
 function cloudPush(immediate){
   if(!fbReady||!fbDoc)return;
   clearTimeout(pushTimer);
@@ -691,8 +731,10 @@ function cloudPush(immediate){
 }
 function adoptCloud(o){
   if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.log)LOG=o.log;if(o.meta)Object.assign(META,o.meta);
+  if(o.exams)EXAMS=o.exams;if(o.courses)COURSES=o.courses;
   localStorage.setItem(LS_DATA,JSON.stringify(QUESTIONS));localStorage.setItem(LS_ANS,JSON.stringify(STATE));
   localStorage.setItem(LS_LOG,JSON.stringify(LOG));localStorage.setItem(LS_META,JSON.stringify(META));
+  localStorage.setItem(LS_EXAM,JSON.stringify(EXAMS));localStorage.setItem(LS_COURSE,JSON.stringify(COURSES));
   syncSeed();renderAll();
 }
 function cloudPull(manual){
@@ -988,6 +1030,75 @@ function renderStats(){
 }
 function goArea(area){document.getElementById("fArea").value=area;document.getElementById("fState").value="wrong";switchTab("all");renderTotal()}
 
+/* ===== 모의고사 기록 ===== */
+function trendSVG(pts){
+  if(!pts.length)return '<div class="empty">기록을 추가하면 점수 추이 그래프가 나타납니다.</div>';
+  const W=Math.max(320,pts.length*64),H=170,pad=28;
+  const max=Math.max(100,...pts.map(p=>p.v)),min=Math.min(0,...pts.map(p=>p.v));
+  const X=i=>pad+(pts.length===1?(W-2*pad)/2:i*(W-2*pad)/(pts.length-1));
+  const Y=v=>H-pad-((v-min)/((max-min)||1))*(H-2*pad);
+  const poly=pts.map((p,i)=>X(i)+","+Y(p.v)).join(" ");
+  const dots=pts.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="4" fill="#5b7cff"/><text x="${X(i)}" y="${Y(p.v)-9}" text-anchor="middle" font-size="11" font-weight="700" fill="#1f2733">${p.v}</text>`).join("");
+  const labels=pts.map((p,i)=>`<text x="${X(i)}" y="${H-7}" text-anchor="middle" font-size="10" fill="#6b7689">${esc(p.d.slice(5))}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px"><polyline points="${poly}" fill="none" stroke="#7a5cff" stroke-width="2.5" stroke-linejoin="round"/>${dots}${labels}</svg>`;
+}
+function renderMock(){
+  const box=document.getElementById("mockBody");if(!box)return;
+  const ex=[...EXAMS].sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const pts=ex.filter(e=>e.total!==""&&e.total!=null).map(e=>({d:e.date||"",v:+e.total}));
+  let html=`<div class="card"><h3 style="margin-top:0">📈 총점 추이 (${pts.length}회)</h3>${trendSVG(pts)}</div>`;
+  // 영역별 평균(약점)
+  const avg={};NCS_AREAS.forEach(a=>{const vs=EXAMS.map(e=>e.areas&&e.areas[a]).filter(v=>v!==undefined&&v!=="");if(vs.length)avg[a]=vs.reduce((s,v)=>s+ +v,0)/vs.length});
+  const keys=Object.keys(avg).sort((a,b)=>avg[a]-avg[b]);
+  if(keys.length){
+    html+=`<div class="card"><h3 style="margin-top:0">🩹 영역별 평균 (낮은 순 = 약점)</h3>`;
+    keys.forEach(k=>{const a=Math.round(avg[k]);html+=`<div class="weakitem"><span class="nm">${esc(k)}</span><div class="progress"><i style="width:${Math.min(100,a)}%;background:${a<60?'linear-gradient(90deg,#e5484d,#f59e0b)':'linear-gradient(90deg,#5b7cff,#7a5cff)'}"></i></div><span class="pill">평균 ${a}점</span></div>`});
+    html+=`</div>`;
+  }
+  html+=`<h3>📋 기록 (${EXAMS.length}회)</h3>`;
+  if(!EXAMS.length)html+='<div class="empty">아직 모의고사 기록이 없어요. 위에서 추가해보세요.</div>';
+  [...EXAMS].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).forEach(e=>{
+    const chips=NCS_AREAS.filter(a=>e.areas&&e.areas[a]!==undefined&&e.areas[a]!=="").map(a=>`<span class="chip">${esc(a)} ${esc(String(e.areas[a]))}</span>`).join("");
+    html+=`<div class="q"><div class="q-top"><span class="q-no">${esc(e.total!==""&&e.total!=null?e.total+"점":"-")}</span>
+      <div class="q-meta"><span class="datestamp">🗓 ${esc(e.date||"")}</span>${e.src?`<span class="srctag">📊 ${esc(e.src)}</span>`:""}${e.time?`<span class="chip">⏱ ${esc(String(e.time))}분</span>`:""}</div></div>
+      <div style="margin:6px 0">${chips||'<span class="pill">영역 점수 미입력</span>'}</div>
+      ${e.memo?`<div class="expl">${esc(e.memo)}</div>`:""}
+      <div class="q-actions"><button class="pillbtn" onclick="delExam('${e.id}')">🗑️ 삭제</button></div></div>`;
+  });
+  box.innerHTML=html;
+}
+function delExam(id){if(confirm("이 기록을 삭제할까요?")){EXAMS=EXAMS.filter(e=>e.id!==id);saveExams();renderMock()}}
+
+/* ===== 강의 팔로업 ===== */
+function renderCourse(){
+  const box=document.getElementById("courseBody");if(!box)return;
+  let html=`<h3>🎧 내 강좌 (${COURSES.length})</h3>`;
+  if(!COURSES.length)html+='<div class="empty">아직 등록한 강좌가 없어요. 위에서 추가해보세요.</div>';
+  COURSES.forEach(c=>{
+    const total=+c.total||0,done=Math.min(+c.done||0,total),pct=total?Math.round(done/total*100):0,left=total-done;
+    html+=`<div class="q"><div class="q-top"><span class="q-no">${pct}%</span>
+      <div class="q-meta">${c.teacher?`<span class="chip">👤 ${esc(c.teacher)}</span>`:""}<span class="chip">${done}/${total}강</span></div></div>
+      <div class="q-text">${esc(c.name||"")}</div>
+      <div class="progress" style="margin:4px 0 10px"><i style="width:${pct}%"></i></div>
+      <div class="q-actions">
+        <button class="pillbtn" onclick="bumpCourse('${c.id}',1)">▶ +1강 들음</button>
+        <button class="pillbtn" onclick="bumpCourse('${c.id}',-1)">◀ 취소</button>
+        <button class="pillbtn" onclick="editCourse('${c.id}')">✏️ 수정</button>
+        <button class="pillbtn" onclick="delCourse('${c.id}')">🗑️ 삭제</button>
+        ${left>0?`<span class="pill" style="align-self:center">남은 강의 ${left}강</span>`:`<span class="pill" style="align-self:center;color:var(--good)">🎉 완강!</span>`}
+      </div></div>`;
+  });
+  box.innerHTML=html;
+}
+function bumpCourse(id,d){const c=COURSES.find(x=>x.id===id);if(!c)return;c.done=Math.max(0,Math.min(+c.total||0,(+c.done||0)+d));saveCourses();renderCourse()}
+function editCourse(id){const c=COURSES.find(x=>x.id===id);if(!c)return;
+  const n=prompt("강좌명",c.name);if(n!==null)c.name=n;
+  const t=prompt("강사",c.teacher||"");if(t!==null)c.teacher=t;
+  const tt=prompt("총 강의수",c.total);if(tt!==null)c.total=parseInt(tt)||c.total;
+  const dd=prompt("들은 강의수",c.done||0);if(dd!==null)c.done=parseInt(dd)||0;
+  saveCourses();renderCourse()}
+function delCourse(id){if(confirm("이 강좌를 삭제할까요?")){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCourse()}}
+
 /* ===== 공통 ===== */
 function fillSel(id,ph,arr){const el=document.getElementById(id);const cur=el.value;
   el.innerHTML=`<option value="">${ph}</option>`+arr.map(x=>`<option>${esc(x)}</option>`).join("");if(arr.includes(cur))el.value=cur}
@@ -997,9 +1108,9 @@ function fillFilters(){
   fillSel("sSubject","전체 과목",subs);
   fillSel("fArea","전체 영역",[...new Set(QUESTIONS.map(q=>q.area).filter(Boolean))].sort());
 }
-function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderStar();renderWrong();renderCal();renderStats();updateDataInfo()}
+function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderStar();renderWrong();renderCal();renderMock();renderCourse();renderStats();updateDataInfo()}
 function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));
-  ["all","solve","cal","wrong","stats","add","data","star"].forEach(id=>document.getElementById(id).hidden=(id!==name))}
+  ["all","solve","cal","mock","course","wrong","stats","add","data","star"].forEach(id=>document.getElementById(id).hidden=(id!==name))}
 function setDateFilter(k){dateFilter=k;
   document.querySelectorAll("#datebar .dbtn").forEach(b=>{
     const val=b.dataset.d==="today"?today():b.dataset.d==="yday"?yesterday():"";b.classList.toggle("on",val===k)});
@@ -1047,11 +1158,11 @@ function showPreview(items){const box=document.getElementById("bulkPreview");
 
 /* ===== 데이터 ===== */
 function updateDataInfo(){document.getElementById("dataInfo").textContent=`문항 ${QUESTIONS.length}개 · 연속 ${META.streak||1}일 · 최고 ${META.best||0}일 · 학습한 날 ${Object.keys(LOG).length}일.`}
-function exportJSON(){const blob=new Blob([JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META},null,2)],{type:"application/json"});
+function exportJSON(){const blob=new Blob([JSON.stringify({questions:QUESTIONS,state:STATE,log:LOG,meta:META,exams:EXAMS,courses:COURSES},null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="합격부스터_백업_"+today()+".json";a.click()}
 function importJSON(){try{const o=JSON.parse(document.getElementById("ioBox").value);
-  if(Array.isArray(o))QUESTIONS=o;else{if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.log)LOG=o.log;if(o.meta)Object.assign(META,o.meta)}
-  saveQ();saveS();saveL();saveM();renderAll();alert("가져오기 완료!")}catch(e){alert("JSON 형식 오류: "+e.message)}}
+  if(Array.isArray(o))QUESTIONS=o;else{if(o.questions)QUESTIONS=o.questions;if(o.state)STATE=o.state;if(o.log)LOG=o.log;if(o.meta)Object.assign(META,o.meta);if(o.exams)EXAMS=o.exams;if(o.courses)COURSES=o.courses}
+  saveQ();saveS();saveL();saveM();saveExams();saveCourses();renderAll();alert("가져오기 완료!")}catch(e){alert("JSON 형식 오류: "+e.message)}}
 
 /* ===== 이벤트 ===== */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
@@ -1091,7 +1202,31 @@ function restoreSyncUI(){
   setSyncStatus(SYNC.on?"🔗 동기화 켜짐":"동기화 꺼짐 — 코드만 입력하고 켜기를 누르세요");
 }
 
-load();renderAll();restoreSyncUI();cloudSyncOnLoad();
+/* 모의고사·강의 입력 */
+function initMockCourseUI(){
+  document.getElementById("mAreas").innerHTML=NCS_AREAS.map(a=>`<div style="flex:1;min-width:90px"><label class="fld" style="margin-top:4px">${a}</label><input type="number" class="mArea" data-area="${a}" placeholder="-" style="width:100%"></div>`).join("");
+  document.getElementById("mDate").value=today();
+}
+document.getElementById("mAdd").onclick=()=>{
+  const total=document.getElementById("mTotal").value.trim();
+  const areas={};document.querySelectorAll(".mArea").forEach(i=>{if(i.value.trim()!=="")areas[i.dataset.area]=+i.value});
+  if(total===""&&!Object.keys(areas).length){alert("총점 또는 영역 점수를 하나 이상 입력하세요");return}
+  EXAMS.push({id:uid(),date:document.getElementById("mDate").value||today(),src:document.getElementById("mSrc").value.trim(),total:total===""?"":+total,time:document.getElementById("mTime").value.trim(),areas,memo:document.getElementById("mMemo").value.trim()});
+  saveExams();
+  document.getElementById("mSrc").value="";document.getElementById("mTotal").value="";document.getElementById("mTime").value="";document.getElementById("mMemo").value="";
+  document.querySelectorAll(".mArea").forEach(i=>i.value="");
+  renderMock();
+};
+document.getElementById("cAdd").onclick=()=>{
+  const name=document.getElementById("cName").value.trim();const total=parseInt(document.getElementById("cTotal").value)||0;
+  if(!name||!total){alert("강좌명과 총 강의수를 입력하세요");return}
+  COURSES.push({id:uid(),name,teacher:document.getElementById("cTeacher").value.trim(),total,done:0});
+  saveCourses();
+  document.getElementById("cName").value="";document.getElementById("cTeacher").value="";document.getElementById("cTotal").value="";
+  renderCourse();
+};
+
+load();initMockCourseUI();renderAll();restoreSyncUI();cloudSyncOnLoad();
 </script>
 </body>
 </html>
