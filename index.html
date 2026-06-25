@@ -140,6 +140,26 @@
   .callegend .cell{width:12px;height:12px}
   .weakitem{display:flex;align-items:center;gap:12px;margin:9px 0}
   .weakitem .nm{min-width:120px;font-weight:700}
+  /* 강의 카드 */
+  .coursecard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .coursecard.done{border-color:#bfe6d2;background:linear-gradient(180deg,#f2fbf6,#fff)}
+  .ctop{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .cring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(#5b7cff calc(var(--p)*1%),#e6ebf5 0)}
+  .cring i{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;color:#3a63e0}
+  .coursecard.done .cring{background:conic-gradient(#15a866 100%,#15a866 0)} .coursecard.done .cring i{color:#15a866}
+  .cname{font-weight:800;font-size:15.5px;line-height:1.3}
+  .cmeta{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .cbar{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+  .cbar>i{display:block;height:100%;background:linear-gradient(90deg,#5b7cff,#7a5cff);border-radius:6px;transition:width .3s}
+  .coursecard.done .cbar>i{background:linear-gradient(90deg,#15a866,#3ddc97)}
+  .cchips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .crecent{color:var(--muted);font-size:12.5px;margin-top:10px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+  .cwatch{background:#eef3ff;border:1.5px solid #cdd9f7;color:#3a63e0;font-weight:800;cursor:pointer;font-size:14px;padding:9px 16px;border-radius:11px}
+  .cwatch:hover{background:#e0eaff}
+  .cmini{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:8px 11px;cursor:pointer;font-size:13px;font-weight:600}
+  .cmini:hover{background:var(--chip)}
+  .cedit label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:9px 0 3px}
+  .cedit input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit}
 </style>
 </head>
 <body>
@@ -1078,38 +1098,60 @@ function renderMock(){
 function delExam(id){if(confirm("이 기록을 삭제할까요?")){EXAMS=EXAMS.filter(e=>e.id!==id);saveExams();renderMock()}}
 
 /* ===== 강의 팔로업 ===== */
+let editingCourse=null;
 function renderCourse(){
   const box=document.getElementById("courseBody");if(!box)return;
   let html=`<h3>🎧 내 강좌 (${COURSES.length})</h3>`;
   if(!COURSES.length)html+='<div class="empty">아직 등록한 강좌가 없어요. 위에서 추가해보세요.</div>';
   COURSES.forEach(c=>{
     const total=+c.total||0,done=Math.min(+c.done||0,total),pct=total?Math.round(done/total*100):0,left=total-done;
-    // 마감 페이스
+    if(editingCourse===c.id){ // 인라인 수정 폼
+      html+=`<div class="coursecard cedit">
+        <div class="cname" style="margin-bottom:6px">✏️ 강좌 수정</div>
+        <label>강좌명</label><input id="ec_name" value="${esc(c.name||"")}">
+        <div class="row">
+          <div style="flex:2;min-width:120px"><label>강사</label><input id="ec_teacher" value="${esc(c.teacher||"")}"></div>
+          <div style="flex:1;min-width:80px"><label>총 강의수</label><input id="ec_total" type="number" value="${total}"></div>
+          <div style="flex:1;min-width:80px"><label>들은 강의</label><input id="ec_done" type="number" value="${done}"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>목표 마감일</label><input id="ec_deadline" type="date" value="${esc(c.deadline||"")}"></div>
+          <div style="flex:1;min-width:110px"><label>하루 목표(강)</label><input id="ec_daily" type="number" value="${c.dailyGoal||""}"></div>
+        </div>
+        <div class="cchips" style="margin-top:14px">
+          <button class="cwatch" onclick="saveEditCourse('${c.id}')">✓ 저장</button>
+          <button class="cmini" onclick="cancelEditCourse()">취소</button>
+        </div></div>`;
+      return;
+    }
     let pace="";
     if(c.deadline){
       if(left<=0)pace=`<span class="chip" style="color:var(--good)">🎉 완강 (마감 ${esc(c.deadline.slice(5))})</span>`;
       else{const dleft=daysBetween(today(),c.deadline);
-        if(dleft<0)pace=`<span class="chip" style="color:var(--bad)">⏰ 마감 ${-dleft}일 지남 · 남은 ${left}강</span>`;
-        else if(dleft===0)pace=`<span class="chip" style="color:var(--bad)">📅 오늘 마감! 남은 ${left}강</span>`;
-        else pace=`<span class="chip">📅 D-${dleft} · 하루 ${Math.ceil(left/dleft)}강씩이면 완강</span>`;}
+        if(dleft<0)pace=`<span class="chip" style="color:var(--bad)">⏰ 마감 ${-dleft}일 지남</span>`;
+        else if(dleft===0)pace=`<span class="chip" style="color:var(--bad)">📅 오늘 마감!</span>`;
+        else pace=`<span class="chip">📅 D-${dleft} · 하루 ${Math.ceil(left/dleft)}강 페이스</span>`;}
     }
-    // 하루 목표
     let daily="";
     if(c.dailyGoal){const td=(c.history&&c.history[today()])||0;daily=`<span class="chip" style="${td>=c.dailyGoal?'color:var(--good)':''}">오늘 ${td}/${c.dailyGoal}강 ${td>=c.dailyGoal?'✅':''}</span>`;}
-    // 최근 수강 날짜
     const hist=c.history||{};const ds=Object.keys(hist).filter(d=>hist[d]>0).sort().reverse();
     const recent=ds.slice(0,5).map(d=>`${fmtK(d)} ▶${hist[d]}강`).join(" · ");
-    html+=`<div class="q"><div class="q-top"><span class="q-no">${pct}%</span>
-      <div class="q-meta">${c.teacher?`<span class="chip">👤 ${esc(c.teacher)}</span>`:""}<span class="chip">${done}/${total}강</span></div></div>
-      <div class="q-text">${esc(c.name||"")}</div>
-      <div class="progress" style="margin:4px 0 8px"><i style="width:${pct}%"></i></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${pace}${daily}${left>0?`<span class="chip">남은 ${left}강</span>`:""}</div>
-      ${recent?`<div class="expl" style="font-size:13px">🗓 최근 수강: ${esc(recent)}</div>`:""}
-      <div class="q-actions" style="margin-top:9px">
-        <button class="pillbtn" onclick="bumpCourse('${c.id}',1)">▶ +1강 (오늘)</button>
-        <button class="pillbtn" onclick="bumpCourse('${c.id}',-1)">◀ 취소</button>
-        <button class="pillbtn" onclick="editCourse('${c.id}')">✏️ 수정</button>
-        <button class="pillbtn" onclick="delCourse('${c.id}')">🗑️ 삭제</button>
+    html+=`<div class="coursecard ${left<=0?"done":""}">
+      <div class="ctop">
+        <div class="cring" style="--p:${pct}"><i>${pct}%</i></div>
+        <div style="flex:1;min-width:0">
+          <div class="cname">${esc(c.name||"")}</div>
+          <div class="cmeta">${c.teacher?"👤 "+esc(c.teacher)+" · ":""}${done}/${total}강${left>0?" · 남은 "+left+"강":""}</div>
+        </div>
+      </div>
+      <div class="cbar"><i style="width:${pct}%"></i></div>
+      ${(pace||daily)?`<div class="cchips" style="margin-top:10px">${pace}${daily}</div>`:""}
+      ${recent?`<div class="crecent">🗓 최근 수강: ${esc(recent)}</div>`:""}
+      <div class="cchips" style="margin-top:13px">
+        <button class="cwatch" onclick="bumpCourse('${c.id}',1)">▶ +1강 들음 (오늘)</button>
+        <button class="cmini" onclick="bumpCourse('${c.id}',-1)">취소</button>
+        <button class="cmini" onclick="startEditCourse('${c.id}')">✏️ 수정</button>
+        <button class="cmini" onclick="delCourse('${c.id}')">🗑️</button>
       </div></div>`;
   });
   box.innerHTML=html;
@@ -1118,14 +1160,17 @@ function bumpCourse(id,d){const c=COURSES.find(x=>x.id===id);if(!c)return;
   const before=+c.done||0,after=Math.max(0,Math.min(+c.total||0,before+d));
   if(after!==before){c.history=c.history||{};const t=today();c.history[t]=Math.max(0,(c.history[t]||0)+(after-before));if(c.history[t]===0)delete c.history[t];}
   c.done=after;saveCourses();renderCourse();}
-function editCourse(id){const c=COURSES.find(x=>x.id===id);if(!c)return;
-  const n=prompt("강좌명",c.name);if(n!==null)c.name=n;
-  const t=prompt("강사",c.teacher||"");if(t!==null)c.teacher=t;
-  const tt=prompt("총 강의수",c.total);if(tt!==null)c.total=parseInt(tt)||c.total;
-  const dd=prompt("들은 강의수",c.done||0);if(dd!==null)c.done=parseInt(dd)||0;
-  const dl=prompt("목표 마감일 (YYYY-MM-DD, 없으면 비움)",c.deadline||"");if(dl!==null)c.deadline=dl.trim();
-  const dg=prompt("하루 목표 강의수 (없으면 0)",c.dailyGoal||0);if(dg!==null)c.dailyGoal=parseInt(dg)||0;
-  saveCourses();renderCourse()}
+function startEditCourse(id){editingCourse=id;renderCourse()}
+function cancelEditCourse(){editingCourse=null;renderCourse()}
+function saveEditCourse(id){const c=COURSES.find(x=>x.id===id);if(!c)return;
+  const g=i=>document.getElementById(i);
+  c.name=g("ec_name").value.trim()||c.name;
+  c.teacher=g("ec_teacher").value.trim();
+  c.total=parseInt(g("ec_total").value)||c.total;
+  c.done=Math.max(0,Math.min(c.total,parseInt(g("ec_done").value)||0));
+  c.deadline=g("ec_deadline").value||"";
+  c.dailyGoal=parseInt(g("ec_daily").value)||0;
+  editingCourse=null;saveCourses();renderCourse();}
 function delCourse(id){if(confirm("이 강좌를 삭제할까요?")){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCourse()}}
 
 /* ===== 공통 ===== */
