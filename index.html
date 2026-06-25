@@ -230,6 +230,11 @@
         <div style="flex:1;min-width:110px"><label class="fld">강사(선택)</label><input type="text" id="cTeacher" placeholder="홍길동" style="width:100%"></div>
         <div style="flex:1;min-width:90px"><label class="fld">총 강의수</label><input type="number" id="cTotal" placeholder="40" style="width:100%"></div>
       </div>
+      <div class="row">
+        <div style="flex:1;min-width:140px"><label class="fld">목표 마감일(선택)</label><input type="date" id="cDeadline" style="width:100%"></div>
+        <div style="flex:1;min-width:110px"><label class="fld">하루 목표(강, 선택)</label><input type="number" id="cDaily" placeholder="3" style="width:100%"></div>
+        <div style="flex:1;min-width:120px;display:flex;align-items:flex-end"><button class="btn ghost sm" id="cWeek" type="button" style="width:100%">📅 일주일 목표로</button></div>
+      </div>
       <button class="btn" id="cAdd" style="margin-top:12px">➕ 강좌 추가</button>
     </div>
     <div id="courseBody"></div>
@@ -667,6 +672,7 @@ function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"
 function today(){return iso(new Date())}
 function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return iso(d)}
 function fmtK(s){if(!s)return"";const[y,m,d]=s.split("-");return `${m}월 ${parseInt(d)}일`}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000)} // b-a (일)
 
 /* ===== 저장/로드 ===== */
 function load(){
@@ -1078,26 +1084,47 @@ function renderCourse(){
   if(!COURSES.length)html+='<div class="empty">아직 등록한 강좌가 없어요. 위에서 추가해보세요.</div>';
   COURSES.forEach(c=>{
     const total=+c.total||0,done=Math.min(+c.done||0,total),pct=total?Math.round(done/total*100):0,left=total-done;
+    // 마감 페이스
+    let pace="";
+    if(c.deadline){
+      if(left<=0)pace=`<span class="chip" style="color:var(--good)">🎉 완강 (마감 ${esc(c.deadline.slice(5))})</span>`;
+      else{const dleft=daysBetween(today(),c.deadline);
+        if(dleft<0)pace=`<span class="chip" style="color:var(--bad)">⏰ 마감 ${-dleft}일 지남 · 남은 ${left}강</span>`;
+        else if(dleft===0)pace=`<span class="chip" style="color:var(--bad)">📅 오늘 마감! 남은 ${left}강</span>`;
+        else pace=`<span class="chip">📅 D-${dleft} · 하루 ${Math.ceil(left/dleft)}강씩이면 완강</span>`;}
+    }
+    // 하루 목표
+    let daily="";
+    if(c.dailyGoal){const td=(c.history&&c.history[today()])||0;daily=`<span class="chip" style="${td>=c.dailyGoal?'color:var(--good)':''}">오늘 ${td}/${c.dailyGoal}강 ${td>=c.dailyGoal?'✅':''}</span>`;}
+    // 최근 수강 날짜
+    const hist=c.history||{};const ds=Object.keys(hist).filter(d=>hist[d]>0).sort().reverse();
+    const recent=ds.slice(0,5).map(d=>`${fmtK(d)} ▶${hist[d]}강`).join(" · ");
     html+=`<div class="q"><div class="q-top"><span class="q-no">${pct}%</span>
       <div class="q-meta">${c.teacher?`<span class="chip">👤 ${esc(c.teacher)}</span>`:""}<span class="chip">${done}/${total}강</span></div></div>
       <div class="q-text">${esc(c.name||"")}</div>
-      <div class="progress" style="margin:4px 0 10px"><i style="width:${pct}%"></i></div>
-      <div class="q-actions">
-        <button class="pillbtn" onclick="bumpCourse('${c.id}',1)">▶ +1강 들음</button>
+      <div class="progress" style="margin:4px 0 8px"><i style="width:${pct}%"></i></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${pace}${daily}${left>0?`<span class="chip">남은 ${left}강</span>`:""}</div>
+      ${recent?`<div class="expl" style="font-size:13px">🗓 최근 수강: ${esc(recent)}</div>`:""}
+      <div class="q-actions" style="margin-top:9px">
+        <button class="pillbtn" onclick="bumpCourse('${c.id}',1)">▶ +1강 (오늘)</button>
         <button class="pillbtn" onclick="bumpCourse('${c.id}',-1)">◀ 취소</button>
         <button class="pillbtn" onclick="editCourse('${c.id}')">✏️ 수정</button>
         <button class="pillbtn" onclick="delCourse('${c.id}')">🗑️ 삭제</button>
-        ${left>0?`<span class="pill" style="align-self:center">남은 강의 ${left}강</span>`:`<span class="pill" style="align-self:center;color:var(--good)">🎉 완강!</span>`}
       </div></div>`;
   });
   box.innerHTML=html;
 }
-function bumpCourse(id,d){const c=COURSES.find(x=>x.id===id);if(!c)return;c.done=Math.max(0,Math.min(+c.total||0,(+c.done||0)+d));saveCourses();renderCourse()}
+function bumpCourse(id,d){const c=COURSES.find(x=>x.id===id);if(!c)return;
+  const before=+c.done||0,after=Math.max(0,Math.min(+c.total||0,before+d));
+  if(after!==before){c.history=c.history||{};const t=today();c.history[t]=Math.max(0,(c.history[t]||0)+(after-before));if(c.history[t]===0)delete c.history[t];}
+  c.done=after;saveCourses();renderCourse();}
 function editCourse(id){const c=COURSES.find(x=>x.id===id);if(!c)return;
   const n=prompt("강좌명",c.name);if(n!==null)c.name=n;
   const t=prompt("강사",c.teacher||"");if(t!==null)c.teacher=t;
   const tt=prompt("총 강의수",c.total);if(tt!==null)c.total=parseInt(tt)||c.total;
   const dd=prompt("들은 강의수",c.done||0);if(dd!==null)c.done=parseInt(dd)||0;
+  const dl=prompt("목표 마감일 (YYYY-MM-DD, 없으면 비움)",c.deadline||"");if(dl!==null)c.deadline=dl.trim();
+  const dg=prompt("하루 목표 강의수 (없으면 0)",c.dailyGoal||0);if(dg!==null)c.dailyGoal=parseInt(dg)||0;
   saveCourses();renderCourse()}
 function delCourse(id){if(confirm("이 강좌를 삭제할까요?")){COURSES=COURSES.filter(c=>c.id!==id);saveCourses();renderCourse()}}
 
@@ -1222,11 +1249,13 @@ document.getElementById("mAdd").onclick=()=>{
 document.getElementById("cAdd").onclick=()=>{
   const name=document.getElementById("cName").value.trim();const total=parseInt(document.getElementById("cTotal").value)||0;
   if(!name||!total){alert("강좌명과 총 강의수를 입력하세요");return}
-  COURSES.push({id:uid(),name,teacher:document.getElementById("cTeacher").value.trim(),total,done:0});
+  COURSES.push({id:uid(),name,teacher:document.getElementById("cTeacher").value.trim(),total,done:0,
+    deadline:document.getElementById("cDeadline").value||"",dailyGoal:parseInt(document.getElementById("cDaily").value)||0,history:{}});
   saveCourses();
-  document.getElementById("cName").value="";document.getElementById("cTeacher").value="";document.getElementById("cTotal").value="";
+  ["cName","cTeacher","cTotal","cDeadline","cDaily"].forEach(id=>document.getElementById(id).value="");
   renderCourse();
 };
+document.getElementById("cWeek").onclick=()=>{const d=new Date();d.setDate(d.getDate()+7);document.getElementById("cDeadline").value=iso(d);};
 
 load();initMockCourseUI();renderAll();restoreSyncUI();cloudSyncOnLoad();
 </script>
