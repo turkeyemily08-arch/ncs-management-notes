@@ -197,6 +197,13 @@
   details.cram li>b{color:var(--accent2)}
   details.cram .cx{color:#b8860b;font-weight:700}
   details.cram h4{margin:14px 0 2px;font-size:15px;color:#7a5cff}
+  .pq{margin:14px 0;padding-bottom:13px;border-bottom:1px dashed var(--line);font-size:15.5px;line-height:1.7}
+  .pq:last-child{border-bottom:none}
+  .pq>b{color:var(--accent2)}
+  .pa{margin-top:7px}
+  .pa summary{cursor:pointer;color:#3a63e0;font-weight:700;font-size:14px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;display:inline-block;list-style:none}
+  .pa summary::-webkit-details-marker{display:none}
+  .pa .ans{margin-top:8px;background:var(--good-bg);border:1px solid #bfe6d2;border-radius:9px;padding:10px 13px;font-size:14.5px}
 </style>
 </head>
 <body>
@@ -211,9 +218,7 @@
     <button class="tab" data-tab="cram">⚡ 막판암기</button>
     <button class="tab" data-tab="wrong">오답노트</button>
     <button class="tab" data-tab="stats">통계·약점</button>
-    <button class="tab" data-tab="add">문항추가</button>
     <button class="tab" data-tab="data">데이터</button>
-    <button class="tab tab-star" data-tab="star">⭐ 별표</button>
   </div>
 </header>
 <main>
@@ -499,7 +504,55 @@
       <li><b>시장실패 원인</b> — 공공재(비배제성·비경합성→무임승차), 외부효과, 자연독점, 정보비대칭 → 정부 개입 근거</li>
       <li><b>정부실패 원인</b> — 사적목표 설정(내부성), X-비효율, 파생적 외부효과, 권력 편재 → 민영화·규제완화 근거</li>
       <li><b>요금재</b> — 배제 가능+비경합(전기·가스·수도) → 공기업 공급의 대표 영역</li>
+      <li><b>지방 출자·출연기관</b> — 지자체가 설립·운영(지방출자출연법 적용), 행안부 경영평가·클린아이 공시. <span class="cx">경기농수산진흥원 같은 도 출연기관은 국가 공운법이 아닌 이 체계 적용</span></li>
     </ul></div></details>
+
+    <h3>📝 예상 기출문제</h3>
+    <details class="cram"><summary>16. 경영학 예상 기출 20제</summary><div class="cbody">
+      <div class="pq"><b>Q1.</b> [목표관리] 피터 드러커의 목표관리(MBO)에 대한 설명으로 가장 적절하지 않은 것은?<br>① 상사와 부하가 공동으로 참여하여 목표를 설정한다<br>② 목표는 가능한 한 구체적이고 측정 가능해야 한다<br>③ 단기 목표보다 장기 전략 목표 수립에 더 유리하다<br>④ 성과 평가 결과를 피드백하여 다음 목표 설정에 반영한다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — MBO는 주로 1년 이내의 구체적·단기적 목표에 중점 → 단기 성과에 집착해 장기 전략을 소홀히 할 수 있다는 게 단점.</div></details></div>
+      <div class="pq"><b>Q2.</b> [마케팅 개념] 소비자가 친환경 제품·사회적 기업 제품을 선호하는 현상과 밀접하며 기업의 사회적 책임을 강조하는 마케팅 개념은?<br>① 생산 개념 ② 판매 개념 ③ 사회적 마케팅 개념 ④ 제품 개념<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 사회적 마케팅 개념은 소비자·기업 이익뿐 아니라 사회 전체의 장기적 복지(환경·공정무역)까지 고려.</div></details></div>
+      <div class="pq"><b>Q3.</b> [수직 통합] 유통 전문 공공기관이 농산물의 안정적 공급망 확보를 위해 직접 농가를 운영하거나 생산 단계를 흡수하는 전략은?<br>① 전방 통합 ② 후방 통합 ③ 수평적 통합 ④ 다각화<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 원재료·생산 등 가치사슬의 이전 단계를 통합하면 후방 통합, 유통·판매망 통합은 전방 통합.</div></details></div>
+      <div class="pq"><b>Q4.</b> [채찍효과] SCM에서 발생하는 채찍효과(Bullwhip Effect)의 원인과 거리가 먼 것은?<br>① 수요 예측의 업데이트·변동성 확대<br>② 대량 주문(일괄 발주)<br>③ 가격 할인·판촉으로 인한 수요 왜곡<br>④ 공급망 참여자 간 투명한 정보 공유·협업<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — 정보를 투명하게 공유하면 채찍효과가 감소. ①~③은 심화 원인.</div></details></div>
+      <div class="pq"><b>Q5.</b> [아웃소싱] 비핵심 업무를 외부 전문 기관에 위탁하는 아웃소싱의 장점으로 보기 어려운 것은?<br>① 고정비의 변동비화를 통한 비용 절감<br>② 외부 전문 기업의 기술·인프라 활용<br>③ 조직 유연성·시장 대응력 제고<br>④ 핵심 기술의 유출 방지·보안 강화<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — 외부 위탁은 오히려 핵심 기술·정보 유출 위험을 높인다(대표적 단점).</div></details></div>
+      <div class="pq"><b>Q6.</b> [가치사슬] 포터의 가치사슬에서 '지원(보조) 활동'에 해당하지 않는 것은?<br>① 인적자원관리 ② 기술개발 ③ 서비스·사후관리 ④ 구매조달<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 서비스(A/S)는 물류투입·생산·물류산출·마케팅과 함께 <b>본원적(주) 활동</b>.</div></details></div>
+      <div class="pq"><b>Q7.</b> [리더십] 변혁적 리더십의 하위 요인에 해당하지 않는 것은?<br>① 카리스마(이상적 영향력) ② 영감적 동기부여 ③ 개별적 배려 ④ 예외에 의한 관리<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — '예외에 의한 관리'와 '조건적 보상'은 <b>거래적 리더십</b>의 구성 요소.</div></details></div>
+      <div class="pq"><b>Q8.</b> [재무상태표] 재무상태표에 대한 설명으로 옳은 것은?<br>① 일정 '기간'의 경영 성과를 나타낸다<br>② 자산은 부채와 자본의 합계와 항상 일치한다<br>③ 현금 유입·유출을 기간 기준으로 보여준다<br>④ 자산은 유동성이 낮은 항목부터 배열하는 것이 원칙이다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 자산=부채+자본은 항상 성립. ①은 손익계산서, ③은 현금흐름표. ④ 전통적으로는 유동성 높은 항목부터 배열(K-IFRS는 강제 없음).</div></details></div>
+      <div class="pq"><b>Q9.</b> [CVP 분석] 고정비 500,000원, 단위당 판매가 2,000원, 단위당 변동비 1,000원일 때 손익분기점(BEP) 판매량은?<br>① 250단위 ② 500단위 ③ 750단위 ④ 1,000단위<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — BEP 판매량 = 고정비 ÷ 단위당 공헌이익 = 500,000 ÷ (2,000−1,000) = 500단위.</div></details></div>
+      <div class="pq"><b>Q10.</b> [동기부여] 자신의 투입 대비 산출 비율을 타인과 비교해 공정하다고 느낄 때 동기가 부여된다고 보는 이론은?<br>① 브룸 기대이론 ② 아담스 공정성이론 ③ 로크 목표설정이론 ④ 스키너 강화이론<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 공정성이론: 준거 인물과 비교해 불공정을 인지하면 이를 해소하는 방향으로 동기 유발.</div></details></div>
+      <div class="pq"><b>Q11.</b> [BCG] 시장 성장률은 높으나 상대적 시장 점유율이 낮아, 스타로 키울지 철수할지 고민해야 하는 사업부는?<br>① 스타 ② 현금젖소 ③ 물음표 ④ 개<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 물음표: 투자 성공 시 스타, 실패 시 개가 되는 갈림길 영역.</div></details></div>
+      <div class="pq"><b>Q12.</b> [브랜드] 하나의 브랜드를 여러 제품 범주에 걸쳐 사용하여 비용을 절감하고 진입 장벽을 낮추는 전략은?<br>① 브랜드 확장 ② 라인 확장 ③ 복수 브랜드 ④ 개별 브랜드<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 성공한 기존 브랜드를 <b>새로운 제품 범주</b>에 적용(가전→의류)하면 브랜드 확장. 같은 범주 내 신제품은 라인 확장.</div></details></div>
+      <div class="pq"><b>Q13.</b> [소비심리] 가격이 오르는데도 과시욕·허영심 때문에 수요가 오히려 증가하는 현상은?<br>① 베블런 효과 ② 스놉 효과 ③ 밴드왜건 효과 ④ 디드로 효과<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 베블런 효과=과시적 소비. 스놉=남들이 사면 안 삼, 밴드왜건=유행 따라 구매.</div></details></div>
+      <div class="pq"><b>Q14.</b> [레버리지] 영업레버리지도(DOL)가 높다는 것의 의미로 가장 적절한 것은?<br>① 자산 구조에서 부채 비율이 매우 높다<br>② 매출액 변동에 따른 영업이익 변동성이 크다<br>③ 고정비 비중이 낮고 변동비 비중이 높다<br>④ 매출이 감소해도 영업이익은 안정적이다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 영업레버리지는 고정영업비용에서 발생. DOL↑ → 매출이 조금만 변해도 영업이익이 크게 변동(위험↑). 부채 비율은 재무레버리지.</div></details></div>
+      <div class="pq"><b>Q15.</b> [생산능력] 생산 설비가 도달할 수 있는 이론적·공학적 최대 생산량은?<br>① 설계 생산능력 ② 유효 생산능력 ③ 실제 생산량 ④ 유실 생산능력<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 설계 생산능력=이상적 최대치. 현실 제약(정비·휴식) 반영 시 유효 생산능력.</div></details></div>
+      <div class="pq"><b>Q16.</b> [인사관리] 특정 직무의 성격·의무·책임·수행 조건 등을 체계적으로 밝혀내기 위해 자료를 수집·분석하는 과정은?<br>① 직무평가 ② 직무분석 ③ 직무설계 ④ 직무전문화<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 직무분석(정보 수집·분석)이 먼저, 그 결과로 가치를 매기는 것이 직무평가.</div></details></div>
+      <div class="pq"><b>Q17.</b> [회계원칙] 재무보고 개념체계에서 가장 강조하는 근본적 질적 특성 두 가지는?<br>① 목적적합성과 표현의 충실성<br>② 비교가능성과 적시성<br>③ 검증가능성과 이해가능성<br>④ 보수주의와 성과주의<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 근본적 질적 특성=목적적합성+표현충실성. 비교·검증·적시·이해 가능성은 보강적 특성.</div></details></div>
+      <div class="pq"><b>Q18.</b> [현금흐름표] '제품 판매·용역 제공, 원재료 구입, 급여 지급' 등 주된 수익창출 활동 관련 현금흐름의 분류는?<br>① 투자활동 ② 재무활동 ③ 영업활동 ④ 비현금거래<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 본업 관련 일상 거래=영업활동. 설비 취득·처분=투자, 차입·배당=재무.</div></details></div>
+      <div class="pq"><b>Q19.</b> [부채] 현재 의무가 존재하고 유출 가능성이 매우 높으며 금액을 신뢰성 있게 추정할 수 있으나, 지출 시기·금액이 불확실한 부채는?<br>① 충당부채 ② 우발부채 ③ 유동부채 ④ 확정부채<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 요건 충족 시 본문에 인식=충당부채. 요건 미충족으로 주석 공시만=우발부채.</div></details></div>
+      <div class="pq"><b>Q20.</b> [재고자산] 물가 상승기에 기말재고가 가장 높게 평가되고 당기순이익이 가장 크게 계상되는 방법은?<br>① 선입선출법(FIFO) ② 후입선출법(LIFO) ③ 이동평균법 ④ 총평균법<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — FIFO는 과거의 싼 단가가 매출원가로 → 원가↓·이익↑·기말재고(최근 비싼 단가)↑. 법인세 부담도 커짐.</div></details></div>
+    </div></details>
+
+    <details class="cram"><summary>17. 행정학 예상 기출 20제</summary><div class="cbody">
+      <div class="pq"><b>Q1.</b> [행정이념] 롤스의 정의론에 대한 설명으로 가장 옳지 않은 것은?<br>① 제1원칙은 기본적 자유의 평등 원칙이다<br>② 제2원칙은 차등의 원칙과 기회균등의 원칙으로 구성된다<br>③ 원초적 입장에서 사람들은 '무지의 베일'을 쓰고 있다고 가정한다<br>④ 차등의 원칙은 가장 유리한 처지의 사람들의 편익을 최대화하는 것이다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — 차등의 원칙은 <b>최소 수혜자(가장 불리한 사람)</b>의 편익을 최대화할 때 불평등이 정당화된다는 원칙.</div></details></div>
+      <div class="pq"><b>Q2.</b> [NPM] 신공공관리론의 특징으로 가장 거리가 먼 것은?<br>① 결과·성과 중심의 행정<br>② 시장기제 도입과 경쟁 촉진<br>③ 시민을 고객으로 인식<br>④ 정치와 행정의 일원론적 접근 강화<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — NPM은 방향잡기(결정)와 노젓기(집행)를 분리 → 신정치행정<b>이원론</b>적 성격.</div></details></div>
+      <div class="pq"><b>Q3.</b> [정책유형] 로위의 정책유형 중 특정 개인·집단에 이익을 배분하며 포크배럴·로그롤링이 주로 발생하는 정책은?<br>① 규제정책 ② 분배정책 ③ 재분배정책 ④ 구성정책<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 분배정책(보조금·SOC 등): 나눠먹기(구유통)·투표거래(로그롤링) 빈발, 갈등 적음.</div></details></div>
+      <div class="pq"><b>Q4.</b> [정책결정] 기존 정책에 약간의 수정·가감만 하여 결정하며, 매몰비용과 현실 제약을 고려하는 모형은?<br>① 합리모형 ② 점증모형 ③ 만족모형 ④ 쓰레기통모형<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 점증모형(린드블롬): 인지 한계 인정, 기존±소폭, 정치적 합리성 중시.</div></details></div>
+      <div class="pq"><b>Q5.</b> [조직구조] 민츠버그의 '기계적 관료제'에 대한 설명으로 옳은 것은?<br>① 복잡하고 동태적인 환경에 가장 적합하다<br>② 핵심운영층이 조직의 핵심 부문이다<br>③ 작업과정의 표준화를 주요 조정기제로 사용한다<br>④ 수평적 분권화가 매우 강하다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 기계적 관료제=단순·안정 환경, 작업과정 표준화. 핵심운영층 중심은 전문적 관료제.</div></details></div>
+      <div class="pq"><b>Q6.</b> [동기부여] 허즈버그 2요인이론에서 '위생요인'에 해당하는 것은?<br>① 성취감 ② 책임감 ③ 작업조건 및 보수 ④ 직무 그 자체<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 위생요인=보수·작업조건·정책·감독 등 직무 <b>외적</b> 요인(불만 방지). 동기요인=성취·인정·책임 등 직무 자체.</div></details></div>
+      <div class="pq"><b>Q7.</b> [공직분류] 계급제와 비교한 직위분류제의 장점으로 옳지 않은 것은?<br>① 동일노동·동일임금 원칙 적용이 용이하다<br>② 부서 간 인사이동이 자유로워 인사배치의 신축성이 높다<br>③ 인사행정의 합리적 기준을 제공한다<br>④ 행정의 전문화·분업화를 촉진한다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 직위분류제는 직무 중심이라 <b>이동이 어려워 신축성↓</b>. 신축성이 높은 것은 계급제.</div></details></div>
+      <div class="pq"><b>Q8.</b> [평정오류] 평정 등급을 중간 수준으로 몰아서 평가하는 오류는?<br>① 연쇄효과 ② 집중화 경향 ③ 관대화 경향 ④ 선입견에 의한 오류<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 집중화 경향. 방지책=강제배분법.</div></details></div>
+      <div class="pq"><b>Q9.</b> [예산원칙] '예산 총계주의(완전성의 원칙)'에 대한 설명으로 옳은 것은?<br>① 모든 수입과 지출은 예산에 계상되어야 한다<br>② 특정 세입을 특정 세출에 충당해서는 안 된다<br>③ 회계연도 개시 전에 국회 의결을 거쳐야 한다<br>④ 예산 과목 간 상호 융통을 금지한다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 완전성=누락 없이 전부 계상. ②통일성 ③사전의결 ④한정성.</div></details></div>
+      <div class="pq"><b>Q10.</b> [예산제도] 기획예산제도(PPBS)에 대한 설명으로 옳지 않은 것은?<br>① 장기 기획과 단기 예산편성을 유기적으로 연결한다<br>② 대안의 비용·편익 분석을 중시한다<br>③ 상향적 편성 방식으로 하급 부처의 자율성을 강조한다<br>④ 자원배분의 합리화를 높일 수 있다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — PPBS는 최고관리층 중심의 <b>하향적(Top-down)</b>·집권적 편성.</div></details></div>
+      <div class="pq"><b>Q11.</b> [행정통제] 옴부즈만 제도에 대한 설명으로 옳지 않은 것은?<br>① 행정부의 부당한 행위를 조사하는 합법적 통제 수단이다<br>② 조사권·시정권고권은 있으나 직접 취소권은 없는 경우가 많다<br>③ 원칙적으로 행정부 소속으로 설치되어 내부통제 기능을 수행한다<br>④ 우리나라 국민권익위원회는 옴부즈만 성격을 띤다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 전형적 옴부즈만은 <b>입법부 소속의 외부통제</b> 장치. (한국 권익위는 국무총리 소속의 예외형)</div></details></div>
+      <div class="pq"><b>Q12.</b> [지방자치] 우리나라 주민직접참여제도에 대한 설명으로 옳지 않은 것은?<br>① 주민투표제는 주요 결정사항에 대해 주민이 직접 투표하는 제도다<br>② 지자체장과 지방의회 의원은 모두 주민소환 대상이다<br>③ 비례대표 지방의회의원은 주민소환 대상에서 제외된다<br>④ 조례제정개폐청구로 주민이 조례 제·개정·폐지를 청구할 수 있다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — <b>비례대표 의원은 주민소환 대상 제외</b>이므로 '모두'는 틀림(③이 옳은 설명).</div></details></div>
+      <div class="pq"><b>Q13.</b> [의제설정] 정부가 주도해 의제화하고 대중 설득·지지 유도 과정을 거치는 모형은?<br>① 외부주도형 ② 내부접근형 ③ 동원형 ④ 다원주의형<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 동원형: 정부 주도+공중의제화(PR). 주로 후진국·권위주의 체제.</div></details></div>
+      <div class="pq"><b>Q14.</b> [뉴거버넌스] 뉴거버넌스 국정운영 방식의 특징으로 가장 적합한 것은?<br>① 정부의 독점적 권한 강화·계층제적 통제<br>② 시장 원리만을 맹신하는 신자유주의적 접근<br>③ 정부·시장·시민사회 간 상호 신뢰와 수평적 네트워크 구축<br>④ 공공서비스의 전면적 민영화<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 뉴거버넌스=신뢰 기반 협력 네트워크(협치).</div></details></div>
+      <div class="pq"><b>Q15.</b> [엽관주의] 엽관주의의 장점으로 볼 수 없는 것은?<br>① 정당정치의 발달에 기여한다<br>② 공직의 특권화를 방지하고 민주주의 실현에 도움을 준다<br>③ 행정의 전문성과 계속성 확보에 유리하다<br>④ 행정부와 입법부 간 조화·협력을 유도하기 쉽다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 정권 교체 시 대량 교체 → <b>전문성·계속성 저하</b>가 엽관주의의 대표 단점.</div></details></div>
+      <div class="pq"><b>Q16.</b> [ZBB] 영기준예산제도의 특징으로 옳은 것은?<br>① 전년도 예산 기준의 점증적 변화만 고려한다<br>② 모든 예산 항목을 매년 원점에서 재평가하여 우선순위를 결정한다<br>③ 하급 관리자의 참여가 엄격히 배제된다<br>④ 투입 중심의 통제 지향적 제도다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — ZBB=기득권 불인정, 매년 0에서 재검토. 하급자 참여 활발(상향적), 감축관리에 유용.</div></details></div>
+      <div class="pq"><b>Q17.</b> [관료제 병리] 규칙·절차 준수 자체가 본래 목적보다 중요하게 취급되는 현상은?<br>① 피터의 법칙 ② 목표 대치 ③ 할거주의 ④ 파킨슨의 법칙<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ②</b> — 목표 대치(동조과잉): 수단(규칙)이 목표를 압도. 머튼이 지적.</div></details></div>
+      <div class="pq"><b>Q18.</b> [정책예측] 델파이 기법에 대한 설명으로 가장 옳지 않은 것은?<br>① 전문가들을 한 장소에 모아 대면 토론으로 결론을 도출한다<br>② 익명성을 보장해 특정인의 영향력을 배제한다<br>③ 설문을 반복 실시하여 의견을 수렴한다<br>④ 통제된 피드백으로 합의를 유도한다<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ①</b> — 델파이는 대면 부작용을 막기 위한 <b>익명·서면 반복 설문</b> 기법. 대면 토론 아님.</div></details></div>
+      <div class="pq"><b>Q19.</b> [지방행정] 티부 가설의 전제조건으로 옳지 않은 것은?<br>① 조세·공공서비스에 대한 완전한 정보<br>② 지역 간 완전한 이동 자유<br>③ 지방공공재의 외부효과가 광범위하게 발생해야 한다<br>④ 다수의 선택 가능한 지방정부 존재<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ③</b> — 티부 가설은 <b>외부효과가 없어야</b> 성립(혜택·비용이 지역 내 국한).</div></details></div>
+      <div class="pq"><b>Q20.</b> [관료제] 베버의 이념형 관료제의 특징이 아닌 것은?<br>① 법규에 의한 행정(권한·책임의 명확한 규정)<br>② 계층제적 상명하복 지휘체계<br>③ 실적·기술적 자격 기반의 채용<br>④ 비정의성의 배제와 인간적 관계의 중시<details class="pa"><summary>정답·해설</summary><div class="ans"><b>정답 ④</b> — 베버 관료제는 <b>비정의성(몰인간성)</b>이 핵심 특징: 감정·편견을 배제하고 객관성 유지.</div></details></div>
+    </div></details>
   </section>
 
   <!-- 오답노트 -->
@@ -507,37 +560,8 @@
     <div id="wrongList"></div>
   </section>
 
-  <!-- 별표 -->
-  <section id="star" hidden>
-    <div class="hint">⭐ 별표한 문항만 모았어요. 자주 틀리거나 외우기 어려운 문항을 별표해 집중 복습하세요. <b>별표를 누르면 암기 꿀팁이 바로 펼쳐집니다.</b></div>
-    <div id="starList"></div>
-  </section>
-
   <!-- 통계·약점 -->
   <section id="stats" hidden></section>
-
-  <!-- 문항추가 -->
-  <section id="add" hidden>
-    <div class="hint">
-      <b>빠른 추가</b> — 캡쳐를 OCR(휴대폰 텍스트 추출/구글 렌즈)로 글자만 복사해 붙여넣고 형식만 맞추면 됩니다.<br>형식 예시:
-      <pre class="io">[경영학/마케팅]
-다음 중 마케팅 믹스 4P에 해당하지 않는 것은?
-1) Product
-2) Price
-3) People
-4) Place
-정답: 3
-해설: 4P는 Product·Price·Place·Promotion. People은 7P 요소.
-꿀팁: '상품·가격·유통·촉진' 네 글자로 외우기</pre>
-      빈 줄로 구분해 여러 문항 한 번에 추가 가능. (<code>1)</code>·<code>1.</code>·<code>①</code> 인식, <code>꿀팁:</code>은 선택)<br>첫 줄 대괄호는 <code>[과목/영역/출처]</code>처럼 출처까지 적을 수 있어요(선택).
-    </div>
-    <textarea class="io" id="bulkInput" rows="13" placeholder="여기에 붙여넣기…"></textarea>
-    <div class="row" style="margin-top:10px">
-      <button class="btn" id="bulkParse">미리보기로 파싱</button>
-      <button class="btn ghost" id="bulkClear">지우기</button>
-    </div>
-    <div id="bulkPreview" style="margin-top:16px"></div>
-  </section>
 
   <!-- 데이터 -->
   <section id="data" hidden>
@@ -1213,7 +1237,6 @@ function refreshExcept(listId){
   renderHero();renderBadges();fillFilters();
   if(listId!=="allList")renderTotal();
   if(listId!=="solveList")renderSolve();
-  if(listId!=="starList")renderStar();
   if(listId!=="wrongList")renderWrong();
   if(listId!=="dateList")renderCal();
   renderStats();updateDataInfo();
@@ -1269,13 +1292,6 @@ function renderSolve(){
   const list=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};if(s.pick>0)return false;if(sub&&q.subject!==sub)return false;return true});
   if(!list.length){box.innerHTML='<div class="empty">🎉 안 푼 문제가 없어요! 전체문항·오답노트에서 복습하세요.</div>';return}
   box.innerHTML=`<div class="hint">📌 아직 안 푼 문제 <b>${list.length}개</b>. 답을 고르면 그 자리에서 바로 채점·해설이 보여요.</div>`;
-  list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
-}
-// 별표만
-function renderStar(){
-  const box=document.getElementById("starList");box.innerHTML="";
-  const list=QUESTIONS.filter(q=>(STATE[q.id]||{}).flag);
-  if(!list.length){box.insertAdjacentHTML("beforeend",'<div class="empty">⭐ 아직 별표한 문항이 없어요. 문항의 ☆ 버튼을 눌러 추가하세요.</div>');return}
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
 // 오답노트: 오늘 복습(이틀 전 틀린 것) + 틀린 문항 모음
@@ -1515,9 +1531,9 @@ function fillFilters(){
   fd.innerHTML=`<option value="">푼 날짜: 전체</option>`+days.map(k=>`<option value="${k}">🗓 ${fmtDay(k)} · ${LOG[k].ids.length}문제</option>`).join("");
   if(days.includes(cur))fd.value=cur;
 }
-function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderStar();renderWrong();renderCal();renderMock();renderCourse();renderStats();updateDataInfo()}
+function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderWrong();renderCal();renderMock();renderCourse();renderStats();updateDataInfo()}
 function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));
-  ["all","solve","cal","mock","course","cram","wrong","stats","add","data","star"].forEach(id=>document.getElementById(id).hidden=(id!==name));
+  ["all","solve","cal","mock","course","cram","wrong","stats","data"].forEach(id=>document.getElementById(id).hidden=(id!==name));
   try{localStorage.setItem("ohap_tab",name)}catch(e){}}
 function setDateFilter(k){dateFilter=k;
   if(k){const[yy,mm]=k.split("-").map(Number);calMonth=new Date(yy,mm-1,1)} // 선택 날짜의 달로 이동
@@ -1573,8 +1589,6 @@ document.getElementById("todayReview").onclick=()=>{
   document.getElementById("sSubject").value="";renderSolve();
   const target=document.querySelector(`#solveList .q[data-qid="${pick.id}"]`);
   if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.style.outline="3px solid #7a5cff";setTimeout(()=>target.style.outline="",1600)}};
-document.getElementById("bulkParse").onclick=()=>showPreview(parseBulk(document.getElementById("bulkInput").value));
-document.getElementById("bulkClear").onclick=()=>{document.getElementById("bulkInput").value="";document.getElementById("bulkPreview").innerHTML=""};
 document.getElementById("exportBtn").onclick=exportJSON;
 document.getElementById("importBtn").onclick=importJSON;
 document.getElementById("seedBtn").onclick=()=>{if(confirm("기본 문항을 다시 추가할까요?")){QUESTIONS=QUESTIONS.concat(SEED.map(x=>mk(uid(),x)));saveQ();renderAll()}};
@@ -1624,7 +1638,8 @@ document.getElementById("cAdd").onclick=()=>{
 document.getElementById("cWeek").onclick=()=>{const d=new Date();d.setDate(d.getDate()+7);document.getElementById("cDeadline").value=iso(d);};
 
 load();initMockCourseUI();renderAll();restoreSyncUI();cloudSyncOnLoad();
-switchTab(localStorage.getItem("ohap_tab")||"all"); // 새로고침해도 보던 탭 유지
+const savedTab=localStorage.getItem("ohap_tab");
+switchTab(document.querySelector(`.tab[data-tab="${savedTab}"]`)?savedTab:"all"); // 새로고침해도 보던 탭 유지(없어진 탭이면 홈)
 </script>
 </body>
 </html>
