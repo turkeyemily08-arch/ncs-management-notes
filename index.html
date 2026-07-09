@@ -183,6 +183,8 @@
   .cedit label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:9px 0 3px}
   .cedit label{font-size:14px}
   .cedit input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit}
+  .cedit textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;resize:vertical;line-height:1.5}
+  .cedit select{width:100%}
 </style>
 </head>
 <body>
@@ -217,6 +219,7 @@
         <option value="correct">맞은 것</option>
         <option value="flag">⭐ 별표</option>
       </select>
+      <select id="fDate"><option value="">푼 날짜: 전체</option></select>
       <input type="text" id="fSearch" placeholder="검색어…" style="flex:1;min-width:140px">
       <button class="btn ghost sm" id="resetAns">기록 초기화</button>
     </div>
@@ -303,7 +306,7 @@
 정답: 3
 해설: 4P는 Product·Price·Place·Promotion. People은 7P 요소.
 꿀팁: '상품·가격·유통·촉진' 네 글자로 외우기</pre>
-      빈 줄로 구분해 여러 문항 한 번에 추가 가능. (<code>1)</code>·<code>1.</code>·<code>①</code> 인식, <code>꿀팁:</code>은 선택)
+      빈 줄로 구분해 여러 문항 한 번에 추가 가능. (<code>1)</code>·<code>1.</code>·<code>①</code> 인식, <code>꿀팁:</code>은 선택)<br>첫 줄 대괄호는 <code>[과목/영역/출처]</code>처럼 출처까지 적을 수 있어요(선택).
     </div>
     <textarea class="io" id="bulkInput" rows="13" placeholder="여기에 붙여넣기…"></textarea>
     <div class="row" style="margin-top:10px">
@@ -354,6 +357,7 @@ const NCS_AREAS=["의사소통","수리","문제해결","자원관리","조직�
 let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10}, EXAMS=[], COURSES=[];
 let dateFilter=""; // "" | "YYYY-MM-DD"
 let calMonth=(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)})(); // 월간 달력에 표시 중인 달
+let editingQ=null; // 인라인 수정 중인 문항 id
 let SYNC={config:"",code:"",on:false}, fbDoc=null, fbReady=false, pushTimer=null;
 // 기본 Firebase 설정(공개되어도 안전한 웹 config). 모바일에선 동기화 코드만 입력하면 됨.
 const DEFAULT_FB_CONFIG=`{
@@ -893,11 +897,17 @@ function renderBadges(){
 
 /* ===== 문항 카드 ===== */
 function qCard(q,idx,opts){
-  opts=opts||{};const st=STATE[q.id]||{};
+  opts=opts||{};
+  if(editingQ===q.id)return qEditCard(q,idx,opts);
+  const st=STATE[q.id]||{};
   const quiz=opts.quiz; // 복습 모드: 정답을 가리고 다시 풀게 함
   const pick=quiz?0:(st.pick||0);const answered=pick>0;const correct=answered&&pick===q.answer;
-  const card=document.createElement("div");
+  const card=document.createElement("div");card.dataset.qid=q.id;
   card.className="q "+(answered?(correct?"correct":"wrong"):"");
+  // 이 카드만 제자리에서 교체 — 목록 전체를 다시 그리지 않아 스크롤·위치가 유지된다
+  const swap=(newOpts)=>{const parent=card.parentElement;const pid=parent?parent.id:"";
+    card.replaceWith(qCard(q,idx,newOpts===undefined?opts:newOpts));
+    refreshExcept(pid);if(pid==="solveList")updateSolveHint()};
   card.innerHTML=`
     <div class="q-top"><span class="q-no">${idx}</span>
       <div class="q-meta">
@@ -924,7 +934,7 @@ function qCard(q,idx,opts){
     el.innerHTML=`<span class="num">${n}</span><span>${esc(c)}</span>`;
     if(!answered)el.onclick=()=>{const ok=n===q.answer;const s=STATE[q.id]||{};s.pick=n;s.date=today();
       if(ok){delete s.review}else{s.review=plus2()} // 틀리면 이틀 후 복습 예약, 맞히면 졸업
-      STATE[q.id]=s;saveS();logAnswer(q.id,ok);renderAll()};
+      STATE[q.id]=s;saveS();logAnswer(q.id,ok);swap({})}; // 채점 결과를 그 자리에서 바로 보여줌
     wrap.appendChild(el);
   });
   if(st.flag){
@@ -936,22 +946,75 @@ function qCard(q,idx,opts){
     const tx=ta.querySelector("textarea");
     ta.querySelector(".save").onclick=()=>{const s=STATE[q.id]||{};s.note=tx.value;STATE[q.id]=s;saveS();const b=ta.querySelector(".save");b.textContent="저장됨 ✓";setTimeout(()=>b.textContent="메모 저장",1200)};
   }
-  card.querySelector(".star").onclick=()=>{const s=STATE[q.id]||{};s.flag=!s.flag;STATE[q.id]=s;saveS();renderAll()};
-  const redo=card.querySelector(".redo");if(redo)redo.onclick=()=>{const s=STATE[q.id]||{};s.pick=0;STATE[q.id]=s;saveS();renderAll()};
-  card.querySelector(".edit").onclick=()=>editQ(q.id);
-  card.querySelector(".del").onclick=()=>{if(confirm("이 문항을 삭제할까요?")){QUESTIONS=QUESTIONS.filter(x=>x.id!==q.id);delete STATE[q.id];saveQ();saveS();renderAll()}};
+  card.querySelector(".star").onclick=()=>{const s=STATE[q.id]||{};s.flag=!s.flag;STATE[q.id]=s;saveS();swap()};
+  const redo=card.querySelector(".redo");if(redo)redo.onclick=()=>{const s=STATE[q.id]||{};s.pick=0;STATE[q.id]=s;saveS();swap()};
+  card.querySelector(".edit").onclick=()=>{editingQ=q.id;swap()};
+  card.querySelector(".del").onclick=()=>{if(confirm("이 문항을 삭제할까요?")){QUESTIONS=QUESTIONS.filter(x=>x.id!==q.id);delete STATE[q.id];saveQ();saveS();
+    const parent=card.parentElement;const pid=parent?parent.id:"";card.remove();refreshExcept(pid);if(pid==="solveList")updateSolveHint()}};
   return card;
 }
-function esc(s){return(s||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))}
+// 문항 인라인 수정 폼 (prompt 연쇄 대신 카드 안에서 바로 수정)
+function qEditCard(q,idx,opts){
+  const card=document.createElement("div");card.className="q";card.dataset.qid=q.id;
+  card.innerHTML=`
+    <div class="q-top"><span class="q-no">${idx}</span><div class="q-meta"><span class="chip">✏️ 문항 수정</span></div></div>
+    <div class="cedit">
+      <label>문제</label><textarea class="eq_q" rows="3">${esc(q.q)}</textarea>
+      ${q.choices.map((c,i)=>`<label>보기 ${i+1}</label><input class="eq_c" value="${esc(c)}">`).join("")}
+      <div class="row">
+        <div style="flex:1;min-width:90px"><label>정답 번호</label><select class="eq_ans">${q.choices.map((_,i)=>`<option value="${i+1}" ${i+1===q.answer?"selected":""}>${i+1}번</option>`).join("")}</select></div>
+        <div style="flex:1;min-width:100px"><label>과목</label><input class="eq_sub" value="${esc(q.subject||"")}"></div>
+        <div style="flex:1;min-width:100px"><label>영역</label><input class="eq_area" value="${esc(q.area||"")}"></div>
+        <div style="flex:1;min-width:100px"><label>출처(선택)</label><input class="eq_src" value="${esc(q.src||"")}"></div>
+      </div>
+      <label>해설</label><textarea class="eq_e" rows="3">${esc(q.expl||"")}</textarea>
+      <label>암기 꿀팁(선택)</label><textarea class="eq_t" rows="2">${esc(q.tip||"")}</textarea>
+    </div>
+    <div class="q-actions"><button class="cwatch save">✓ 저장</button><button class="cmini cancel">취소</button></div>`;
+  const g=s=>card.querySelector(s);
+  const done=()=>{const parent=card.parentElement;const pid=parent?parent.id:"";
+    card.replaceWith(qCard(q,idx,opts));refreshExcept(pid)};
+  g(".save").onclick=()=>{
+    q.q=g(".eq_q").value.trim()||q.q;
+    q.choices=[...card.querySelectorAll(".eq_c")].map((el,i)=>el.value.trim()||q.choices[i]);
+    q.answer=parseInt(g(".eq_ans").value)||q.answer;
+    q.subject=g(".eq_sub").value.trim();q.area=g(".eq_area").value.trim();q.src=g(".eq_src").value.trim();
+    q.expl=g(".eq_e").value.trim();q.tip=g(".eq_t").value.trim();
+    editingQ=null;saveQ();done();
+  };
+  g(".cancel").onclick=()=>{editingQ=null;done()};
+  return card;
+}
+// 카드 하나만 제자리 교체한 뒤, 그 카드가 속한 목록을 제외한 나머지 화면을 갱신
+function refreshExcept(listId){
+  renderHero();renderBadges();fillFilters();
+  if(listId!=="allList")renderTotal();
+  if(listId!=="solveList")renderSolve();
+  if(listId!=="starList")renderStar();
+  if(listId!=="wrongList")renderWrong();
+  if(listId!=="dateList")renderCal();
+  renderStats();updateDataInfo();
+}
+// 학습하기 상단 안내 문구의 남은 문제 수만 갱신 (목록은 건드리지 않음)
+function updateSolveHint(){
+  const box=document.getElementById("solveList");const h=box&&box.querySelector(".hint");if(!h)return;
+  const sub=v("sSubject");
+  const n=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};if(s.pick>0)return false;if(sub&&q.subject!==sub)return false;return true}).length;
+  h.innerHTML=n?`📌 아직 안 푼 문제 <b>${n}개</b>. 답을 고르면 그 자리에서 바로 채점·해설이 보여요.`
+    :`🎉 안 푼 문제를 모두 끝냈어요! 방금 푼 문제의 결과를 확인한 뒤 오답노트에서 복습하세요.`;
+}
+function esc(s){return(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
 /* ===== 필터/렌더 ===== */
 function v(id){return document.getElementById(id).value}
 function filtered(){
   const sub=v("fSubject"),ar=v("fArea"),stt=v("fState"),kw=(v("fSearch")||"").trim().toLowerCase();
+  const dt=v("fDate");const dayIds=dt?new Set((LOG[dt]||{ids:[]}).ids):null;
   return QUESTIONS.filter(q=>{
+    if(dayIds&&!dayIds.has(q.id))return false;
     if(sub&&q.subject!==sub)return false;
     if(ar&&q.area!==ar)return false;
-    if(kw&&!((q.q+q.choices.join(" ")+(q.expl||"")).toLowerCase().includes(kw)))return false;
+    if(kw&&!((q.q+" "+q.choices.join(" ")+" "+(q.expl||"")+" "+(q.tip||"")).toLowerCase().includes(kw)))return false;
     const s=STATE[q.id]||{};const ans=s.pick>0;
     if(stt==="todo"&&ans)return false;
     if(stt==="wrong"&&!(ans&&s.pick!==q.answer))return false;
@@ -967,7 +1030,9 @@ function dueList(){return QUESTIONS.filter(q=>{const s=STATE[q.id]||{};return s.
 function renderTotal(){
   const box=document.getElementById("allList");box.innerHTML="";
   const list=filtered();const due=dueList().length;
+  const dt=v("fDate");
   let head=`<div class="hint">📚 전체 <b>${QUESTIONS.length}문항</b> · 표시 중 ${list.length}개`;
+  if(dt)head+=` · 🗓 <b>${fmtDay(dt)}</b>에 푼 문제만`;
   if(due>0)head+=` &nbsp;|&nbsp; 🔁 <b style="color:#e5484d">이틀 전 틀린 ${due}문항</b> 복습 시간! <a href="#" id="goReview" style="color:#4f7cff;font-weight:800">오답노트로 →</a>`;
   head+=`</div>`;box.innerHTML=head;
   const ge=document.getElementById("goReview");if(ge)ge.onclick=e=>{e.preventDefault();switchTab("wrong")};
@@ -980,7 +1045,7 @@ function renderSolve(){
   const sub=v("sSubject");
   const list=QUESTIONS.filter(q=>{const s=STATE[q.id]||{};if(s.pick>0)return false;if(sub&&q.subject!==sub)return false;return true});
   if(!list.length){box.innerHTML='<div class="empty">🎉 안 푼 문제가 없어요! 전체문항·오답노트에서 복습하세요.</div>';return}
-  box.innerHTML=`<div class="hint">📌 아직 안 푼 문제 <b>${list.length}개</b>. 하나씩 풀어볼까요?</div>`;
+  box.innerHTML=`<div class="hint">📌 아직 안 푼 문제 <b>${list.length}개</b>. 답을 고르면 그 자리에서 바로 채점·해설이 보여요.</div>`;
   list.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
 // 별표만
@@ -1221,6 +1286,11 @@ function fillFilters(){
   fillSel("fSubject","전체 과목",subs);
   fillSel("sSubject","전체 과목",subs);
   fillSel("fArea","전체 영역",[...new Set(QUESTIONS.map(q=>q.area).filter(Boolean))].sort());
+  // 푼 날짜 필터: 학습 기록이 있는 날만, 최신순
+  const fd=document.getElementById("fDate");const cur=fd.value;
+  const days=Object.keys(LOG).filter(k=>LOG[k].ids&&LOG[k].ids.length).sort().reverse();
+  fd.innerHTML=`<option value="">푼 날짜: 전체</option>`+days.map(k=>`<option value="${k}">🗓 ${fmtDay(k)} · ${LOG[k].ids.length}문제</option>`).join("");
+  if(days.includes(cur))fd.value=cur;
 }
 function renderAll(){renderHero();renderBadges();fillFilters();renderTotal();renderSolve();renderStar();renderWrong();renderCal();renderMock();renderCourse();renderStats();updateDataInfo()}
 function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));
@@ -1231,28 +1301,20 @@ function setDateFilter(k){dateFilter=k;
   renderCal();
 }
 
-/* ===== 추가/수정 ===== */
-function editQ(id){const q=QUESTIONS.find(x=>x.id===id);if(!q)return;
-  const nq=prompt("문제 텍스트",q.q);if(nq===null)return;q.q=nq;
-  for(let i=0;i<q.choices.length;i++){const c=prompt(`보기 ${i+1}`,q.choices[i]);if(c!==null)q.choices[i]=c}
-  const an=prompt("정답 번호",q.answer);if(an!==null)q.answer=parseInt(an)||q.answer;
-  const ex=prompt("해설",q.expl||"");if(ex!==null)q.expl=ex;
-  const tp=prompt("암기 꿀팁(선택)",q.tip||"");if(tp!==null)q.tip=tp;
-  const sub=prompt("과목",q.subject||"");if(sub!==null)q.subject=sub;
-  const ar=prompt("영역",q.area||"");if(ar!==null)q.area=ar;saveQ();renderAll()}
+/* ===== 추가 ===== */
 function parseBulk(text){
   const blocks=text.split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);const out=[];
   blocks.forEach(b=>{const lines=b.split(/\n/).map(l=>l.trim()).filter(Boolean);
-    let subject="",area="",qtext="",choices=[],answer=0,expl="",tip="",mode="q";const cnum={"①":1,"②":2,"③":3,"④":4,"⑤":5};
+    let subject="",area="",src="",qtext="",choices=[],answer=0,expl="",tip="",mode="q";const cnum={"①":1,"②":2,"③":3,"④":4,"⑤":5};
     lines.forEach(line=>{let m;
-      if((m=line.match(/^\[(.+?)\]$/))){const p=m[1].split(/[\/·,]/);subject=(p[0]||"").trim();area=(p[1]||"").trim();return}
+      if((m=line.match(/^\[(.+?)\]$/))){const p=m[1].split(/[\/·,]/);subject=(p[0]||"").trim();area=(p[1]||"").trim();src=(p[2]||"").trim();return}
       if((m=line.match(/^정답\s*[:：]?\s*([1-5①-⑤])/))){answer=cnum[m[1]]||parseInt(m[1])||0;mode="";return}
       if((m=line.match(/^해설\s*[:：]?\s*(.*)$/))){expl=m[1];mode="e";return}
       if((m=line.match(/^꿀팁\s*[:：]?\s*(.*)$/))){tip=m[1];mode="t";return}
       if((m=line.match(/^\s*([①-⑤])\s*(.+)$/))){choices.push(m[2].trim());mode="";return}
       if((m=line.match(/^\s*([1-5])[\)\.．]\s*(.+)$/))){choices.push(m[2].trim());mode="";return}
       if(mode==="t")tip+="\n"+line;else if(mode==="e")expl+="\n"+line;else if(mode==="q")qtext=qtext?qtext+" "+line:line});
-    if(qtext&&choices.length>=2)out.push({id:uid(),subject:subject||"경영학",area,q:qtext,choices,answer:answer||1,expl,tip})});
+    if(qtext&&choices.length>=2)out.push({id:uid(),subject:subject||"경영학",area,src,q:qtext,choices,answer:answer||1,expl,tip})});
   return out;
 }
 function showPreview(items){const box=document.getElementById("bulkPreview");
@@ -1278,15 +1340,15 @@ function importJSON(){try{const o=JSON.parse(document.getElementById("ioBox").va
 
 /* ===== 이벤트 ===== */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
-["fSubject","fArea","fState","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderTotal));
+["fSubject","fArea","fState","fDate","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderTotal));
 document.getElementById("sSubject").addEventListener("input",renderSolve);
 document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 달력은 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0;delete STATE[k].review}});saveS();renderAll()}};
 document.getElementById("todayReview").onclick=()=>{
-  const list=QUESTIONS.filter(q=>!((STATE[q.id]||{}).pick>0));if(!list.length)return;
+  const list=QUESTIONS.filter(q=>!((STATE[q.id]||{}).pick>0));
+  if(!list.length){alert("안 푼 문제가 없어요! 🎉 오답노트에서 복습해보세요.");return}
   const pick=list[Math.floor(Math.random()*list.length)];
   document.getElementById("sSubject").value="";renderSolve();
-  const idx=QUESTIONS.indexOf(pick);const cards=document.querySelectorAll("#solveList .q");
-  const target=[...cards].find(c=>c.querySelector(".q-no")&&c.querySelector(".q-no").textContent==(idx+1));
+  const target=document.querySelector(`#solveList .q[data-qid="${pick.id}"]`);
   if(target){target.scrollIntoView({behavior:"smooth",block:"center"});target.style.outline="3px solid #7a5cff";setTimeout(()=>target.style.outline="",1600)}};
 document.getElementById("bulkParse").onclick=()=>showPreview(parseBulk(document.getElementById("bulkInput").value));
 document.getElementById("bulkClear").onclick=()=>{document.getElementById("bulkInput").value="";document.getElementById("bulkPreview").innerHTML=""};
