@@ -64,12 +64,6 @@
   .badge.on{opacity:1;filter:none;color:var(--txt)}
 
   .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-  .datebar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px;
-    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow)}
-  .dbtn{background:var(--chip);border:1px solid var(--line);color:var(--muted);padding:6px 12px;
-    border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
-  .dbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .datebar .lbl{font-size:12.5px;color:var(--muted);font-weight:600;margin-left:auto}
   select,input,textarea.io{background:var(--panel);border:1px solid var(--line);color:var(--txt);
     border-radius:10px;padding:10px 13px;font-size:16px;font-family:inherit;box-shadow:var(--shadow)}
   .btn{background:var(--accent);border:none;color:#fff;padding:9px 15px;border-radius:10px;
@@ -130,14 +124,42 @@
   h3{margin:22px 0 10px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
 
-  /* 학습 잔디 */
-  .cal{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,15px);grid-auto-columns:15px;gap:4px;overflow-x:auto;padding:4px 0}
-  .cell{width:15px;height:15px;border-radius:4px;background:#e6ebf5;cursor:default;border:1px solid rgba(0,0,0,.03)}
-  .cell.l1{background:#bcd2ff} .cell.l2{background:#7fa8ff} .cell.l3{background:#5b7cff} .cell.l4{background:#3a63e0}
-  .cell.has{cursor:pointer}
-  .cell.has:hover{outline:2px solid #7a5cff}
-  .callegend{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:8px}
-  .callegend .cell{width:12px;height:12px}
+  /* 월간 학습 달력 */
+  .mcal-card{padding:20px 18px}
+  .mcal-head{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 20px}
+  .mcal-head button{background:none;border:none;font-size:30px;line-height:1;color:var(--muted);cursor:pointer;padding:2px 14px;border-radius:10px}
+  .mcal-head button:hover{background:var(--chip);color:var(--txt)}
+  .mcal-head .ym{font-size:25px;font-weight:800;letter-spacing:.5px;text-align:center}
+  .mcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}
+  .mcal-grid>*{min-width:0}
+  .mcal-grid .wd{text-align:center;font-weight:700;font-size:14px;padding:4px 0 8px;color:var(--muted)}
+  .mcal-grid .wd.sun{color:var(--bad)} .mcal-grid .wd.sat{color:var(--accent)}
+  .mcal-day{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;
+    font-size:17px;font-weight:600;border-radius:14px;cursor:default}
+  .mcal-day.empty{visibility:hidden}
+  .mcal-day.sun{color:var(--bad)} .mcal-day.sat{color:var(--accent)}
+  .mcal-day.has{cursor:pointer}
+  .mcal-day.has:hover{background:var(--chip)}
+  .mcal-day .dnum{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%}
+  .mcal-day.today .dnum{background:#e9f0ff;color:var(--accent2);font-weight:800}
+  .mcal-day.sel .dnum,.mcal-day.today.sel .dnum{background:var(--accent);color:#fff;font-weight:800;box-shadow:0 3px 10px rgba(79,124,255,.4)}
+  .mcal-day .dot{position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:var(--good)}
+  /* 이번 달 요약 카드 */
+  .mcal-summary{background:linear-gradient(180deg,#eef3ff,#f7f9ff);border-color:#dbe6ff}
+  .mcal-summary .ms-title{font-size:19px;font-weight:800;margin-bottom:14px}
+  .mcal-summary .ms-stats{display:flex;gap:22px;flex-wrap:wrap}
+  .mcal-summary .ms{display:inline-flex;align-items:center;gap:7px;font-size:16px;font-weight:700}
+  .mcal-summary .ms b{font-weight:800;color:var(--txt)}
+  .mcal-summary .ms i{width:9px;height:9px;border-radius:50%;display:inline-block;background:currentColor}
+  .mcal-summary .ms.d1{color:#7a5cff} .mcal-summary .ms.d2{color:var(--accent)}
+  .mcal-summary .ms.d3{color:var(--good)} .mcal-summary .ms.d4{color:var(--bad)}
+  /* 선택한 날짜 헤더 (예: 5. 12 화요일) */
+  .daylabel{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:10px 15px;margin-bottom:13px;
+    color:#4a5568;font-size:15.5px}
+  .daylabel .dl-date{font-weight:800}
+  .daylabel .dl-x{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14.5px;font-weight:600;padding:2px 6px;border-radius:7px}
+  .daylabel .dl-x:hover{background:var(--chip);color:var(--txt)}
   .weakitem{display:flex;align-items:center;gap:12px;margin:9px 0}
   .weakitem .nm{min-width:120px;font-weight:700}
   /* 강의 카드 */
@@ -210,15 +232,8 @@
     <div id="solveList"></div>
   </section>
 
-  <!-- 학습기록 (캘린더 + 날짜별 푼 문항) -->
+  <!-- 학습기록 (월간 달력 + 날짜별 푼 문항) -->
   <section id="cal" hidden>
-    <div class="datebar" id="datebar">
-      <button class="dbtn on" data-d="">전체 기간</button>
-      <button class="dbtn" data-d="today">오늘</button>
-      <button class="dbtn" data-d="yday">어제</button>
-      <input type="date" id="datePick">
-      <span class="lbl" id="dateLabel"></span>
-    </div>
     <div id="calBody"></div>
     <div id="dateList"></div>
   </section>
@@ -338,6 +353,7 @@ const LS_DATA="ohap_questions_v1", LS_ANS="ohap_answers_v1", LS_META="ohap_meta_
 const NCS_AREAS=["의사소통","수리","문제해결","자원관리","조직이해","정보"];
 let QUESTIONS=[], STATE={}, LOG={}, META={streak:0,best:0,lastDate:"",goal:10}, EXAMS=[], COURSES=[];
 let dateFilter=""; // "" | "YYYY-MM-DD"
+let calMonth=(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)})(); // 월간 달력에 표시 중인 달
 let SYNC={config:"",code:"",on:false}, fbDoc=null, fbReady=false, pushTimer=null;
 // 기본 Firebase 설정(공개되어도 안전한 웹 config). 모바일에선 동기화 코드만 입력하면 됨.
 const DEFAULT_FB_CONFIG=`{
@@ -693,6 +709,9 @@ function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"
 function today(){return iso(new Date())}
 function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return iso(d)}
 function fmtK(s){if(!s)return"";const[y,m,d]=s.split("-");return `${m}월 ${parseInt(d)}일`}
+function fmtDay(s){if(!s)return"";const[y,m,d]=s.split("-").map(Number);
+  const w=["일","월","화","수","목","금","토"][new Date(y,m-1,d).getDay()];
+  return `${m}. ${d} ${w}요일`}
 function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000)} // b-a (일)
 
 /* ===== 저장/로드 ===== */
@@ -985,44 +1004,64 @@ function renderWrong(){
   wrong.forEach(q=>box.appendChild(qCard(q,QUESTIONS.indexOf(q)+1)));
 }
 
-/* ===== 학습기록 (캘린더) ===== */
+/* ===== 학습기록 (월간 달력) ===== */
+function calNav(delta){calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+delta,1);renderCal()}
 function renderCal(){
   const sec=document.getElementById("calBody");
-  const end=new Date();const start=new Date();start.setDate(end.getDate()-7*12);start.setDate(start.getDate()-start.getDay());
-  let cells="";const days=Math.round((end-start)/86400000)+1;
-  let studyDays=0,weekCount=0;const weekAgo=new Date();weekAgo.setDate(end.getDate()-6);
-  for(let i=0;i<days;i++){
-    const d=new Date(start);d.setDate(start.getDate()+i);const k=iso(d);
+  const y=calMonth.getFullYear(),mo=calMonth.getMonth();
+  const first=new Date(y,mo,1),firstWd=first.getDay(),dim=new Date(y,mo+1,0).getDate();
+  const tk=today();
+  const WD=["일","월","화","수","목","금","토"];
+  // 이번 달 집계
+  let studyDays=0,qCount=0,correct=0;
+  for(let d=1;d<=dim;d++){const k=iso(new Date(y,mo,d));const lg=LOG[k];if(lg&&lg.ids.length){studyDays++;qCount+=lg.ids.length;correct+=lg.correct||0}}
+  const wrong=qCount-correct;
+  // 요일 헤더
+  let head=WD.map((w,i)=>`<div class="wd ${i===0?"sun":i===6?"sat":""}">${w}</div>`).join("");
+  // 날짜 셀
+  let cells="";
+  for(let i=0;i<firstWd;i++)cells+=`<div class="mcal-day empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const dt=new Date(y,mo,d),k=iso(dt),wd=dt.getDay();
     const lg=LOG[k];const c=lg?lg.ids.length:0;
-    if(c>0)studyDays++;
-    if(c>0&&d>=new Date(iso(weekAgo)))weekCount+=c;
-    let lv="";if(c>=10)lv="l4";else if(c>=6)lv="l3";else if(c>=3)lv="l2";else if(c>=1)lv="l1";
-    cells+=`<div class="cell ${lv} ${c?"has":""}" data-k="${k}" title="${fmtK(k)} · ${c}문제"></div>`;
+    const cls=["mcal-day"];
+    if(wd===0)cls.push("sun");else if(wd===6)cls.push("sat");
+    if(c)cls.push("has");
+    if(k===tk)cls.push("today");
+    if(k===dateFilter)cls.push("sel");
+    cells+=`<div class="${cls.join(" ")}" data-k="${k}" ${c?`title="${fmtK(k)} · ${c}문제"`:""}>
+      <span class="dnum">${d}</span>${c?`<span class="dot"></span>`:""}</div>`;
   }
-  const m=metrics();
   sec.innerHTML=`
-    <div class="card">
-      <div class="stat-row">
-        <div class="stat"><b>${studyDays}</b><span>학습한 날</span></div>
-        <div class="stat" style="color:#7a5cff"><b>🔥 ${META.streak||1}</b><span>연속 학습일</span></div>
-        <div class="stat"><b>${META.best||0}</b><span>최고 연속</span></div>
-        <div class="stat"><b>${weekCount}</b><span>최근 7일 푼 문제</span></div>
+    <div class="card mcal-card">
+      <div class="mcal-head">
+        <button type="button" aria-label="이전 달" onclick="calNav(-1)">‹</button>
+        <span class="ym">${y}. ${String(mo+1).padStart(2,"0")}</span>
+        <button type="button" aria-label="다음 달" onclick="calNav(1)">›</button>
       </div>
+      <div class="mcal-grid">${head}${cells}</div>
     </div>
-    <div class="card">
-      <h3 style="margin-top:0">🌱 학습 잔디 (최근 12주)</h3>
-      <div class="cal">${cells}</div>
-      <div class="callegend">적음 <span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span> 많음
-        &nbsp;·&nbsp; 칸을 클릭하면 그날 푼 문제를 아래에서 볼 수 있어요.</div>
+    <div class="card mcal-summary">
+      <div class="ms-title">이번 달 화이팅하셨나요? 😊</div>
+      <div class="ms-stats">
+        <span class="ms d1"><i></i>학습일 <b>${studyDays}</b></span>
+        <span class="ms d2"><i></i>푼 문제 <b>${qCount}</b></span>
+        <span class="ms d3"><i></i>정답 <b>${correct}</b></span>
+        <span class="ms d4"><i></i>오답 <b>${wrong}</b></span>
+      </div>
     </div>`;
-  sec.querySelectorAll(".cell.has").forEach(el=>el.onclick=()=>setDateFilter(el.dataset.k));
+  sec.querySelectorAll(".mcal-day.has").forEach(el=>el.onclick=()=>setDateFilter(el.dataset.k===dateFilter?"":el.dataset.k));
   // 선택한 날짜에 푼 문항 목록
   const dl=document.getElementById("dateList");dl.innerHTML="";
   if(dateFilter){
     const lg=LOG[dateFilter]||{ids:[],correct:0};
-    dl.innerHTML=`<div class="hint">🗓 <b>${fmtK(dateFilter)}</b>에 푼 문제 ${lg.ids.length}개 · 정답 ${lg.correct}개</div>`;
+    dl.innerHTML=`<div class="daylabel"><span class="dl-date">${fmtDay(dateFilter)}</span>
+      <span>🟢 푼 문제 <b>${lg.ids.length}</b> · 정답 <b>${lg.correct}</b>
+      <button type="button" class="dl-x" onclick="setDateFilter('')">✕ 해제</button></span></div>`;
     QUESTIONS.forEach(q=>{if(lg.ids.includes(q.id))dl.appendChild(qCard(q,QUESTIONS.indexOf(q)+1))});
     if(!lg.ids.length)dl.insertAdjacentHTML("beforeend",`<div class="empty">${fmtK(dateFilter)}에 푼 문제가 없어요.</div>`);
+  }else{
+    dl.innerHTML=`<div class="hint">🟢 초록 점이 있는 날은 그날 문제를 푼 날이에요. 날짜를 누르면 그날 푼 문제를 볼 수 있어요.</div>`;
   }
 }
 
@@ -1188,10 +1227,7 @@ function switchTab(name){document.querySelectorAll(".tab").forEach(x=>x.classLis
   ["all","solve","cal","mock","course","wrong","stats","add","data","star"].forEach(id=>document.getElementById(id).hidden=(id!==name));
   try{localStorage.setItem("ohap_tab",name)}catch(e){}}
 function setDateFilter(k){dateFilter=k;
-  document.querySelectorAll("#datebar .dbtn").forEach(b=>{
-    const val=b.dataset.d==="today"?today():b.dataset.d==="yday"?yesterday():"";b.classList.toggle("on",val===k)});
-  document.getElementById("datePick").value=k||"";
-  document.getElementById("dateLabel").textContent=k?`📅 ${fmtK(k)} 학습분`:"";
+  if(k){const[yy,mm]=k.split("-").map(Number);calMonth=new Date(yy,mm-1,1)} // 선택 날짜의 달로 이동
   renderCal();
 }
 
@@ -1244,9 +1280,7 @@ function importJSON(){try{const o=JSON.parse(document.getElementById("ioBox").va
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 ["fSubject","fArea","fState","fSearch"].forEach(id=>document.getElementById(id).addEventListener("input",renderTotal));
 document.getElementById("sSubject").addEventListener("input",renderSolve);
-document.querySelectorAll("#datebar .dbtn").forEach(b=>b.onclick=()=>{const d=b.dataset.d;setDateFilter(d==="today"?today():d==="yday"?yesterday():"")});
-document.getElementById("datePick").addEventListener("change",e=>setDateFilter(e.target.value));
-document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 잔디는 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0;delete STATE[k].review}});saveS();renderAll()}};
+document.getElementById("resetAns").onclick=()=>{if(confirm("푼 기록을 초기화할까요? (별표·꿀팁 메모·문항·학습기록 달력은 유지)")){Object.keys(STATE).forEach(k=>{if(STATE[k]){STATE[k].pick=0;delete STATE[k].review}});saveS();renderAll()}};
 document.getElementById("todayReview").onclick=()=>{
   const list=QUESTIONS.filter(q=>!((STATE[q.id]||{}).pick>0));if(!list.length)return;
   const pick=list[Math.floor(Math.random()*list.length)];
